@@ -1,0 +1,28 @@
+{
+  "name": "architect-debug-lang",
+  "displayName": "Architect Debug Lang",
+  "description": "Syntax highlighting for formatted Architect Debug Log",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "architect",
+      "aliases": ["Architect", "architect"],
+      "extensions": ["archlog"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "architect",
+      "scopeName": "source.architect",
+      "path": "./syntaxes/architect.tmLanguage.json",
+      "embeddedLanguages": {
+        "meta.embedded.inline.sql": "sql"
+      }
+    }]
+  }
+}

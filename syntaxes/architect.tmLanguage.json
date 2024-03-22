@@ -1,0 +1,58 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Architect",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#sql-statement"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.architect",
+					"match": "\\b(if|while|for|return)\\b"
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.architect",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.architect",
+					"match": "\\\\."
+				}
+			]
+		},
+		"sql-statement": {
+			"begin": "\\SQL STATEMENT {",
+			"end": "\\}",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.brace.open"
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brace.close"
+				}
+			},
+			"patterns": [
+				{
+					"include": "source.sql"
+				}
+			],
+			"contentName": "meta.embedded.inline.sql"
+			
+		}
+	},
+	"scopeName": "source.architect"
+}

@@ -1,0 +1,449 @@
+19:                Call: Dialog                                                       PASSED
+	...
+30:                Call: DBCount Menu Items                                           PASSED
+	1:             Database: Count Menu Items                                             PASSED
+		SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_menu WHERE name = 'Interleave Dispatcher' AND locale_id = 1033 AND menu_level = 'Manager' }
+		----  0
+		-------- (1 rows affected)
+39:                Call: Reset Global Variables                                       PASSED
+41:                Call: DBDel SNS w/User                                             PASSED
+	2:             Database: Del SNS w/User                                               PASSED
+		SQL STATEMENT { DELETE t_serial_number_scanned WHERE employee_id = 'ADK3' AND wh_id = '01' }
+		-------- (0 rows affected)
+50:                Call: DBFind Menu Dynamic Call                                     PASSED
+	1:             Database: Find Menu Dynamic Call                                       PASSED
+		SQL STATEMENT { SELECT dynamic_call FROM t_menu WITH ( NOLOCK ) WHERE process = 'Interleave Dispatcher' AND locale_id = 1033 AND menu_level = 'Manager' }
+		----  No
+		-------- (2 rows affected)
+2:                 Call: Global Values - Cycle Count                                  PASSED
+	2:                 Call: DBList Whse Control - Cycle Count                            PASSED
+		1:             Database: List Whse Control - Cycle Count                              PASSED
+			SQL STATEMENT { SELECT wh_id , control_type , description , next_value , config_display , allow_edit , c1 , c2 , f1 FROM t_whse_control WHERE wh_id = '01' AND control_type IN ( 'ON_DEMAND_CC' , 'PROMPT_START_LOC_CC' , 'PROMPT_ZONE_CC' ) }
+			----  01 ON_DEMAND_CC On Demand Cycle Count 1 SHOW_VA 1
+			----  01 PROMPT_START_LOC_CC Cycle Count Start Loc Prompt 0 SHOW_VA 1
+			----  01 PROMPT_ZONE_CC Cycle Count Zone Prompt 1 SHOW_VA 1
+			-------- (3 rows affected)
+6:                 Call: Lookup Interleave Process to Call                            PASSED
+	2:                 Call: DBFind LKP (Text) w/Disp List                                PASSED
+		2:             Database: Find LKP (Text) w/Disp List                                  PASSED
+			SQL STATEMENT { SELECT text FROM t_lookup lup WITH ( NOLOCK ) WHERE lup.lookup_type = 'MENUITEM' AND lup.description = 'Cycle Count' AND locale_id = 1033 }
+			----  Cycle Count
+			-------- (1 rows affected)
+	7:                 Call: DBFind IGM w/Interleave Group Name                           PASSED
+		2:             Database: Find IGM w/Interleave Group Name                             PASSED
+			SQL STATEMENT { SELECT intlv_gp_id , intlv_gp_name , interleave_type FROM t_intlv_gp_master IGM WHERE IGM.intlv_gp_name = 'Cycle Count' }
+			----  1 Cycle Count AGEPRIORITY
+			-------- (1 rows affected)
+8:                 Call: Interleave Dispatcher - CC Zone                              PASSED
+	9:                 Call: DBExec SP Display Zones                                      PASSED
+		1:             Database: Exec SP CC Display Zones                                     PASSED
+			SQL STATEMENT { EXECUTE usp_cc_display_zones '01' }
+			----  1 All Fork Zones ALL
+			----  2 FRA-ZONE1 FRA-ZONE1
+			----  3 FRA-ZONE2 FRA-ZONE2
+			----  4 FRAIR FRAIR
+			----  5 FRDEST FRDEST
+			----  6 FRDOORS FRDOORS
+			----  7 FRDROP FRDROP
+			----  8 FRF-ZONE1 FRF-ZONE1
+			----  9 FRF-ZONE2 FRF-ZONE2
+			----  10 FRFL FRFL
+			----  11 FRRET FRRET
+			----  12 FRTRK FRTRK
+			----  13 LHA-ZONE1 LHA-ZONE1
+			----  14 LHA-ZONE2 LHA-ZONE2
+			----  15 LHA-ZONE3 LHA-ZONE3
+			----  16 LHA-ZONE4 LHA-ZONE4
+			----  17 LHA-ZONE5 LHA-ZONE5
+			----  18 LHAIR LHAIR
+			----  19 LHDEST LHDEST
+			----  20 LHDOORS LHDOORS
+			----  21 LHDROP LHDROP
+			----  22 LHF-ZONE1 LHF-ZONE1
+			----  23 LHF-ZONE2 LHF-ZONE2
+			----  24 LHF-ZONE3 LHF-ZONE3
+			----  25 LHF-ZONE4 LHF-ZONE4
+			----  26 LHF-ZONE5 LHF-ZONE5
+			----  27 LHFL LHFL
+			----  28 LHTRK LHTRK
+			----  29 PVA-ZONE1 PVA-ZONE1
+			----  30 PVA-ZONE2 PVA-ZONE2
+			----  31 PVA-ZONE3 PVA-ZONE3
+			----  32 PVA-ZONE4 PVA-ZONE4
+			----  33 PVA-ZONE5 PVA-ZONE5
+			----  34 PVAIR PVAIR
+			----  35 PVDEST PVDEST
+			----  36 PVDOORS PVDOORS
+			----  37 PVDROP PVDROP
+			----  38 PVF-ZONE1 PVF-ZONE1
+			----  39 PVF-ZONE2 PVF-ZONE2
+			----  40 PVF-ZONE3 PVF-ZONE3
+			----  41 PVF-ZONE4 PVF-ZONE4
+			----  42 PVF-ZONE5 PVF-ZONE5
+			----  43 PVFL PVFL
+			----  44 PVTRK PVTRK
+			----  45 SEA-ZONE1 SEA-ZONE1
+			----  46 SEA-ZONE2 SEA-ZONE2
+			----  47 SEA-ZONE3 SEA-ZONE3
+			----  48 SEAIR SEAIR
+			----  49 SEDEST SEDEST
+			----  50 SEDOORS SEDOORS
+			----  51 SEDROP SEDROP
+			----  52 SEF-ZONE1 SEF-ZONE1
+			----  53 SEF-ZONE2 SEF-ZONE2
+			----  54 SEF-ZONE3 SEF-ZONE3
+			----  55 SEFL SEFL
+			----  56 SETRK SETRK
+			----  57 WWAIR WWAIR
+			----  58 WWDEST WWDEST
+			----  59 WWDOORS WWDOORS
+			----  60 WWFL WWFL
+			----  61 WWTRK WWTRK
+			-------- (61 rows affected)
+	11:                Call: Dialog                                                       PASSED
+10:                Call: Interleave Dispatcher - CC Start Location                    PASSED
+12:                Call: Interleave Dispatcher - Pick Area                            PASSED
+	9:                 Call: Global Values - Picking                                      PASSED
+		2:                 Call: DBList Global Control - Picking                              PASSED
+			1:             Database: List Global Control - Picking                                PASSED
+				SQL STATEMENT { SELECT control_type , description , next_value , config_display , allow_edit , c1 , c2 , f1 FROM t_control WHERE control_type IN ( 'BATCH_COLLECTIVE' , 'DISP_WORK_METRICS' , 'LABEL_SOFTWARE' , 'OPPORTUNISTICCC' , 'PROMPT_PICK_AREA' , 'PACKING SLIPS' ) }
+				----  BATCH_COLLECTIVE Sum container pick qty 1  1
+				----  DISP_WORK_METRICS Display work assignmt metrics 0  0
+				----  LABEL_SOFTWARE Label printing software 0  0 BARTENDER
+				----  OPPORTUNISTICCC Opportunistic cycle counting 0  1 NO_COUNT
+				----  PACKING SLIPS Print slips after picking 0  1 ORDER
+				----  PROMPT_PICK_AREA Pick area prompting 1  0
+				-------- (6 rows affected)
+	13:                Call: DBCount IGM w/Intlv Group ID,Work Type                       PASSED
+		3:             Database: Count IGM w/Intlv Group ID,Work Type                         PASSED
+			SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_intlv_gp_master igm INNER JOIN t_intlv_gp_detail igd ON igm.intlv_gp_id = igd.intlv_gp_id WHERE igm.intlv_gp_id = 1 AND work_type = '03' }
+			----  0
+			-------- (1 rows affected)
+	21:                Call: DBCount IGM w/Intlv Group ID,Work Type                       PASSED
+		3:             Database: Count IGM w/Intlv Group ID,Work Type                         PASSED
+			SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_intlv_gp_master igm INNER JOIN t_intlv_gp_detail igd ON igm.intlv_gp_id = igd.intlv_gp_id WHERE igm.intlv_gp_id = 1 AND work_type = '04' }
+			----  0
+			-------- (1 rows affected)
+	29:                Call: DBCount IGM w/Intlv Group ID,Work Type                       PASSED
+		3:             Database: Count IGM w/Intlv Group ID,Work Type                         PASSED
+			SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_intlv_gp_master igm INNER JOIN t_intlv_gp_detail igd ON igm.intlv_gp_id = igd.intlv_gp_id WHERE igm.intlv_gp_id = 1 AND work_type = '02' }
+			----  0
+			-------- (1 rows affected)
+14:                Call: Interleave Dispatcher - Location                             PASSED
+17:                Call: DBExec SP Interleave Dispatcher                              PASSED
+	3:             Database: Exec SP Interleave Dispatcher                                PASSED
+		SQL STATEMENT { DECLARE @out_vchWorkQID NVARCHAR ( 30 ) , @out_nSequence INTEGER , @out_vchProcess NVARCHAR ( 130 ) , @out_nCCWorkNotAssignedID INTEGER , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE dbo.usp_interleave_dispatcher 1 , NULL , NULL , NULL , NULL , 'LHFL' , 0 , NULL , '01' , 'ADK3' , 0 , @out_vchWorkQID OUTPUT , @out_nSequence OUTPUT , @out_vchProcess OUTPUT , @out_nCCWorkNotAssignedID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchWorkQID , @out_nSequence , @out_vchProcess , @out_nCCWorkNotAssignedID , @out_vchCode , @out_vchMsg }
+		----  117112 0 Cycle Count 0 SUCCESS NONE
+		-------- (1 rows affected)
+36:                Call: DBCount IGP w/Process,Operator Directed Flag= 'Y'            PASSED
+	2:             Database: Count IGP w/Process,Operator Directed Flag= 'Y'              PASSED
+		SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_intlv_process WHERE operator_directed_flag = N'YES' AND process = 'Cycle Count' }
+		----  0
+		-------- (1 rows affected)
+39:                Call: DBUpd WKQ Assign w/Work Q ID                                 PASSED
+	2:             Database: Upd WKQ Assign w/Work Q ID                                   PASSED
+		SQL STATEMENT { UPDATE t_work_q SET work_status = 'A' , workers_assigned = ( workers_assigned + 1 ) WHERE wh_id = '01' AND work_q_id = '117112' AND ( ( workers_assigned = 0 AND work_type = '16' ) OR work_type <> '16' ) AND ( workers_assigned + 1 ) <= workers_required }
+		-------- (1 rows affected)
+41:                Call: DBCount WKA w/User ID,WKQ ID                                 PASSED
+	3:             Database: Count WKA w/User ID, WKQ ID                                  PASSED
+		SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_work_q_assignment WHERE user_assigned = 'ADK3' AND work_q_id = '117112' AND wh_id = '01' }
+		----  0
+		-------- (1 rows affected)
+43:                Call: DBIns WQA w/WKQ Id,User ID                                   PASSED
+	4:             Database: Ins WQA                                                      PASSED
+		SQL STATEMENT { INSERT INTO t_work_q_assignment ( work_q_id , status , user_assigned , wh_id ) VALUES ( '117112' , 'A' , 'ADK3' , '01' ) }
+		-------- (1 rows affected)
+45:             Execute: External PO - Upd EMP Process                                PASSED
+	6:             Database: Upd EMP Process w/User ID                                    PASSED
+		SQL STATEMENT { UPDATE t_employee SET last_menu_item = business_process , business_process = 'Cycle Count' , last_tran_start_datetime = GETDATE ( ) WHERE id = 'ADK3' AND wh_id = '01' }
+		-------- (1 rows affected)
+51:             Execute: External PO - Cycle Count                                    PASSED
+	1:         Dynamic Call: Execute PO                                                   PASSED
+		2:                 Call: Global Values - Cycle Count                                  PASSED
+			2:                 Call: DBList Whse Control - Cycle Count                            PASSED
+				1:             Database: List Whse Control - Cycle Count                              PASSED
+					SQL STATEMENT { SELECT wh_id , control_type , description , next_value , config_display , allow_edit , c1 , c2 , f1 FROM t_whse_control WHERE wh_id = '01' AND control_type IN ( 'ITM_UNIT_CNT_ENABLED' , 'LP_UNIT_CNT_ENABLED' , 'LP_ITM_CNT_ENABLED' , 'CC_LOST_LOC_ITEM' , 'CC_LOST_LOC_LP' , 'CC_LOST_LOC_MLP' , 'CC_SHOW_EXPECTED' ) }
+					----  01 CC_LOST_LOC_ITEM CC Lost Location Item 1 SHOW_VA 1 LOST
+					----  01 CC_LOST_LOC_LP CC Lost Location LP 1 SHOW_VA 1 LOSTLPN
+					----  01 CC_LOST_LOC_MLP CC Lost Location MLP 0 SHOW_VA 1 CC_LOST_LOC_MLP
+					----  01 CC_SHOW_EXPECTED CC Show Expected Count 0 SHOW_VA 1
+					----  01 ITM_UNIT_CNT_ENABLED CC Item Unit Cnt 0 SHOW_VA 1
+					----  01 LP_ITM_CNT_ENABLED CC LP Item Unit Cnt 0 SHOW_VA 1
+					----  01 LP_UNIT_CNT_ENABLED CC LP Unit Cnt 0 SHOW_VA 1
+					-------- (7 rows affected)
+		10:                Call: DBUpd WKQ Sts w/Type,Sts=H                                   PASSED
+			3:             Database: Upd WKQ Sts w/Type,Sts=H                                     PASSED
+				SQL STATEMENT { UPDATE t_work_q SET work_status = 'U' WHERE work_type = '08' AND work_status = 'H' AND wh_id = '01' }
+				-------- (0 rows affected)
+		11:                Call: DBFind WKQ (Location) w/Work Q ID                            PASSED
+			2:             Database: Find WKQ (Location) w/Work Q ID                              PASSED
+				SQL STATEMENT { SELECT location_id FROM t_work_q WHERE work_q_id = '117112' AND wh_id = '01' }
+				----  LH-STR03
+				-------- (1 rows affected)
+		14:                Call: CC Location                                                  PASSED
+			2:                 Call: CC - Location                                                PASSED
+				12:                Call: Dialog                                                       PASSED
+				18:                Call: DBExec usp_cc_verify_location                                PASSED
+					1:             Database: Exec usp_cc_verify_location                                  PASSED
+						SQL STATEMENT { DECLARE @out_sys_shortmsg NVARCHAR ( 20 ) , @out_deadlock_flag INT , @out_location_id NVARCHAR ( 50 ) , @out_item_hu_indicator NVARCHAR ( 1 ) , @out_loc_type NVARCHAR ( 1 ) EXEC [dbo].[usp_cc_verify_location] @in_wh_id = '01' , @in_employee_id = 'ADK3' , @in_device_id = 'ZTC-1302' , @in_fork_id = 'FAADK3' , @in_calling_procedure = NULL , @in_dialog_field = 'A-L76-02A' , @in_work_q_id = '117112' , @out_sys_shortmsg = @out_sys_shortmsg OUTPUT , @out_deadlock_flag = @out_deadlock_flag OUTPUT , @out_location_id = @out_location_id OUTPUT , @out_loc_type = @out_loc_type OUTPUT , @out_item_hu_indicator = @out_item_hu_indicator OUTPUT SELECT @out_sys_shortmsg , @out_deadlock_flag , @out_location_id , @out_loc_type , @out_item_hu_indicator }
+						----   0 A-L76-02A M H
+						-------- (1 rows affected)
+				23:                Call: DBExec SP CC Unassign Work                                   PASSED
+					3:             Database: Exec SP CC Unassign Work                                     PASSED
+						SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_unassign_work '01' , '117112' , 'ADK3' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+						----  SUCCESS NONE
+						-------- (1 rows affected)
+				26:                Call: DBExec SP CC Create On Demand CC                             PASSED
+					4:             Database: Exec SP CC Create On Demand CC                               PASSED
+						SQL STATEMENT { DECLARE @out_vchWorkQID NVARCHAR ( 10 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_create_on_demand_cc '01' , 'A-L76-02A' , '08' , 'ADK3' , @out_vchWorkQID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchWorkQID , @out_vchCode , @out_vchMsg }
+						----  258244 SUCCESS SUCCESS
+						-------- (1 rows affected)
+				38:                Call: DBUpd EMP (Current Location) w/User ID                       PASSED
+					2:             Database: Upd EMP (Current Location) w/User ID                         PASSED
+						SQL STATEMENT { UPDATE t_employee SET current_location = 'A-L76-02A' WHERE wh_id = '01' AND id = 'ADK3' }
+						-------- (1 rows affected)
+			5:                 Call: Auto Generate Tran Group ID                                  PASSED
+				2:                 Call: DBExec SP Get Next Value                                     PASSED
+					3:             Database: Exec SP Get Next Value                                       PASSED
+						SQL STATEMENT { DECLARE @out_nUID NVARCHAR ( 10 ) , @out_nErrorNumber uddt_output_code , @out_vchLogMsg uddt_output_msg EXECUTE usp_get_next_value 'TRAN_GROUP_ID' , @out_nUID OUTPUT , @out_nErrorNumber OUTPUT , @out_vchLogMsg OUTPUT SELECT @out_nUID , @out_vchLogMsg }
+						----  224892 SUCCESS
+						-------- (1 rows affected)
+				4:                 Call: DBCount TRL w/Tran Grp ID                                    PASSED
+					3:             Database: Count TRL w/Tran Grp ID                                      PASSED
+						SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_tran_log WITH ( NOLOCK ) WHERE tran_group_id = '224892' }
+						----  0
+						-------- (1 rows affected)
+			13:                Call: CC Location LP                                               PASSED
+				2:                 Call: DBExec SP CC Initialize LP MLP Count                         PASSED
+					2:             Database: Exec SP CC Initialize LP MLP Count                           PASSED
+						SQL STATEMENT { DECLARE @out_nExpectedMasterHUCount INTEGER , @out_nExpectedHUCount INTEGER , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_initialize_lp_mlp_count '01' , 'A-L76-02A' , NULL , '08' , @out_nExpectedMasterHUCount OUTPUT , @out_nExpectedHUCount OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_nExpectedMasterHUCount , @out_nExpectedHUCount , @out_vchCode , @out_vchMsg }
+						----  0 2 SUCCESS NONE
+						-------- (1 rows affected)
+				12:                Call: CC - LP                                                      PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location A-L76-02A.' , NULL , 'Scanned: 0' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+					22:                Call: Format Validation Check                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '800' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '800' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00080834' , NULL , 'A-L76-02A' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   A-L76-02A  SUCCESS NONE
+							-------- (1 rows affected)
+				18:                Call: CC - TX Count All Items                                      PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'ADK3' , '800' , '224892' , '01' , 'A-L76-02A' , NULL , 'LP00080834' , NULL , '08' , '258244' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+				12:                Call: CC - LP                                                      PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location A-L76-02A.' , NULL , 'Scanned: 1' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+					22:                Call: Format Validation Check                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '800' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '800' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , '000000003690814' , NULL , 'A-L76-02A' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----     SUCCESS NONE
+							-------- (1 rows affected)
+				27:                Call: DBFind HUM w/HU                                              PASSED
+					2:             Database: Find HUM w/HU                                                PASSED
+						SQL STATEMENT { SELECT hu_id , type , control_number , location_id , subtype , status , fifo_date , wh_id , load_position , haz_material , load_id , load_seq , ver_flag , zone , reserved_for , container_type , stop_id , parent_hu_id , user_id FROM t_hu_master WHERE hu_id = '000000003690814' AND wh_id = '01' }
+						-------- (0 rows affected)
+				40:                Call: CC Add Item                                                  PASSED
+					9:                 Call: CC - Add LP Item                                             PASSED
+						4:                 Call: Dialog                                                       PASSED
+						10:                Call: Verify Item                                                  PASSED
+							5:                 Call: List Item Clients                                            PASSED
+								7:                 Call: DBExec SF List Client Codes                                  PASSED
+									1:             Database: Exec SF List Client Codes                                    PASSED
+										SQL STATEMENT { SELECT row_number , client_name , item_number FROM usf_list_client_codes ( '01' , '801542709815' ) }
+										-------- (0 rows affected)
+							6:                 Call: DBExec SP Verify Item                                        PASSED
+								1:             Database: Exec SP Verify Item                                          PASSED
+									SQL STATEMENT { DECLARE @out_vchItemNumber NVARCHAR ( 30 ) , @out_vchItemDesc NVARCHAR ( 60 ) , @out_vchDisplayItemNum NVARCHAR ( 30 ) , @out_vchClientCode NVARCHAR ( 30 ) , @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchLotControl NVARCHAR ( 1 ) , @out_vchSerialControl NVARCHAR ( 1 ) , @out_vchExpDateControl NVARCHAR ( 1 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_verify_item '01' , '801542709815' , NULL , @out_vchItemNumber OUTPUT , @out_vchItemDesc OUTPUT , @out_vchDisplayItemNum OUTPUT , @out_vchClientCode OUTPUT , @out_vchLotControl OUTPUT , @out_vchSerialControl OUTPUT , @out_vchExpDateControl OUTPUT , @out_vchSysShortMsg OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchItemNumber , @out_vchItemDesc , @out_vchDisplayItemNum , @out_vchClientCode , @out_vchLotControl , @out_vchSerialControl , @out_vchExpDateControl , @out_vchSysShortMsg , @out_vchCode , @out_vchMsg }
+									----  102704-004 NATURAL COWHIDE PILLOW,CV-BLK&W-SET 2-20 102704-004 01 N N N  SUCCESS NONE
+									-------- (1 rows affected)
+					15:                Call: CC - Add Lot                                                 PASSED
+					17:                Call: CC - Expiration Date                                         PASSED
+					19:                Call: Recall Check - Warning                                       PASSED
+						11:                Call: DBCount STO w/Keys                                           PASSED
+							3:             Database: Count STO w/Keys                                             PASSED
+								SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_stored_item WHERE wh_id = '01' AND location_id = 'FAADK3' AND hu_id = '000000003690814' AND item_number = '102704-004' AND type = 0 AND lot_number IS NULL AND stored_attribute_id IS NULL }
+								----  0
+								-------- (1 rows affected)
+						14:                Call: DBFind RCL TOP 1 HOLD Reason ID w/Keys                       PASSED
+							2:             Database: Find RCL TOP 1 HOLD Reason ID w/Keys                         PASSED
+								SQL STATEMENT { SELECT TOP 1 reason_id FROM t_recall WHERE wh_id = '01' AND item_number = '102704-004' AND ( lot_number IS NULL OR lot_number IS NULL ) AND ( stored_attribute_id IS NULL OR stored_attribute_id IS NULL ) AND rescinded_by IS NULL ORDER BY date_created ASC }
+								-------- (0 rows affected)
+					20:                Call: CC - Add Quantity                                            PASSED
+						6:                 Call: Universal Quantity                                           PASSED
+						15:                Call: DBFind STO w/Keys                                            PASSED
+							3:             Database: Find STO w/Keys                                              PASSED
+								SQL STATEMENT { SELECT CAST ( sto_id AS NVARCHAR ( 20 ) ) , sequence , item_number , actual_qty , unavailable_qty , status , wh_id , location_id , fifo_date , expiration_date , reserved_for , lot_number , inspection_code , type , put_away_location , CAST ( stored_attribute_id AS VARCHAR ( 20 ) ) , shipment_number FROM t_stored_item WHERE location_id = 'A-L76-02A' AND item_number = '102704-004' AND lot_number IS NULL AND wh_id = '01' AND stored_attribute_id IS NULL AND hu_id = '000000003690814' AND type = 0 }
+								-------- (0 rows affected)
+					22:                Call: CC - Add Quantity Recount                                    PASSED
+						7:                 Call: Universal Quantity                                           PASSED
+						19:                Call: DBFind STO w/Keys                                            PASSED
+							3:             Database: Find STO w/Keys                                              PASSED
+								SQL STATEMENT { SELECT CAST ( sto_id AS NVARCHAR ( 20 ) ) , sequence , item_number , actual_qty , unavailable_qty , status , wh_id , location_id , fifo_date , expiration_date , reserved_for , lot_number , inspection_code , type , put_away_location , CAST ( stored_attribute_id AS VARCHAR ( 20 ) ) , shipment_number FROM t_stored_item WHERE location_id = 'A-L76-02A' AND item_number = '102704-004' AND lot_number IS NULL AND wh_id = '01' AND stored_attribute_id IS NULL AND hu_id = '000000003690814' AND type = 0 }
+								-------- (0 rows affected)
+					24:                Call: CC - TX Add Item                                             PASSED
+						7:                 Call: Adjust - Move Serial Number                                  PASSED
+						10:                Call: DBExec SP CC Log Transaction Add Item                        PASSED
+							1:             Database: Exec SP CC Log Transaction Add Item                          PASSED
+								SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_new_item 'ADK3' , '802' , '224892' , '01' , 'A-L76-02A' , '000000003690814' , NULL , '102704-004' , NULL , '01/01/1900' , 1 , NULL , '08' , '258244' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+								----  SUCCESS NONE
+								-------- (1 rows affected)
+					9:                 Call: CC - Add LP Item                                             FAILED
+						4:                 Call: Dialog                                                       FAILED
+				41:                Call: DBExec SP CC UPD HU Ver Flag                                 PASSED
+					3:             Database: Exec SP CC UPD HU Ver Flag                                   PASSED
+						SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_upd_hu_ver_flag '01' , 'A-L76-02A' , '000000003690814' , NULL , 'Y' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+						----  SUCCESS NONE
+						-------- (1 rows affected)
+				12:                Call: CC - LP                                                      PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location A-L76-02A.' , NULL , 'Scanned: 2' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+					22:                Call: Format Validation Check                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '802' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '802' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00080835' , NULL , 'A-L76-02A' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   A-L76-02A  SUCCESS NONE
+							-------- (1 rows affected)
+				18:                Call: CC - TX Count All Items                                      PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'ADK3' , '802' , '224892' , '01' , 'A-L76-02A' , NULL , 'LP00080835' , '102704-004' , '08' , '258244' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+				12:                Call: CC - LP                                                      FAILED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location A-L76-02A.' , NULL , 'Scanned: 3' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+				45:                Call: DBExec SP CC Find Uncounted LP/MLP                           PASSED
+					2:             Database: Exec SP CC Find Uncounted LP/MLP                             PASSED
+						SQL STATEMENT { DECLARE @out_nRowCount INTEGER , @out_vchHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_find_uncounted_lp_mlp '01' , 'A-L76-02A' , NULL , NULL , '0' , @out_nRowCount OUTPUT , @out_vchHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_nRowCount , @out_vchHUID , @out_vchCode , @out_vchMsg }
+						----  1 LP00080835 SUCCESS NONE
+						-------- (1 rows affected)
+				49:                Call: CC - Uncounted LP Warning                                    PASSED
+					2:                 Call: Dialog                                                       PASSED
+				55:                Call: CC - TX Uncounted MLP LP                                     PASSED
+					7:                 Call: DBExec SP CC Log Transaction Uncounted MLP LP                PASSED
+						1:             Database: Exec SP CC Log Transaction Uncounted MLP LP                  PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_uncounted_mlp_lp 'ADK3' , '224892' , '01' , NULL , 'A-L76-02A' , NULL , '0' , '08' , '258244' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+				45:                Call: DBExec SP CC Find Uncounted LP/MLP                           PASSED
+					2:             Database: Exec SP CC Find Uncounted LP/MLP                             PASSED
+						SQL STATEMENT { DECLARE @out_nRowCount INTEGER , @out_vchHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_find_uncounted_lp_mlp '01' , 'A-L76-02A' , NULL , NULL , '0' , @out_nRowCount OUTPUT , @out_vchHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_nRowCount , @out_vchHUID , @out_vchCode , @out_vchMsg }
+						----  0  SUCCESS NONE
+						-------- (1 rows affected)
+			18:                Call: DBUpd LOC Last Count Date w/Location                         PASSED
+				2:             Database: Upd LOC Last Count Date w/Location                           PASSED
+					SQL STATEMENT { UPDATE t_location SET last_count_date = '02/09/2024' WHERE location_id = 'A-L76-02A' AND wh_id = '01' }
+					-------- (1 rows affected)
+		17:                Call: DBExec SP Close Work Queue                                   PASSED
+			3:             Database: Exec SP Close Work Queue                                     PASSED
+				SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_close_work_queue '01' , '258244' , 'ADK3' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+				----  SUCCESS NONE
+				-------- (1 rows affected)
+17:                Call: DBExec SP Interleave Dispatcher                              PASSED
+	3:             Database: Exec SP Interleave Dispatcher                                PASSED
+		SQL STATEMENT { DECLARE @out_vchWorkQID NVARCHAR ( 30 ) , @out_nSequence INTEGER , @out_vchProcess NVARCHAR ( 130 ) , @out_nCCWorkNotAssignedID INTEGER , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE dbo.usp_interleave_dispatcher 1 , NULL , NULL , NULL , NULL , 'LHFL' , 0 , NULL , '01' , 'ADK3' , 0 , @out_vchWorkQID OUTPUT , @out_nSequence OUTPUT , @out_vchProcess OUTPUT , @out_nCCWorkNotAssignedID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchWorkQID , @out_nSequence , @out_vchProcess , @out_nCCWorkNotAssignedID , @out_vchCode , @out_vchMsg }
+		----  117112 0 Cycle Count 0 SUCCESS NONE
+		-------- (1 rows affected)
+36:                Call: DBCount IGP w/Process,Operator Directed Flag= 'Y'            PASSED
+	2:             Database: Count IGP w/Process,Operator Directed Flag= 'Y'              PASSED
+		SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_intlv_process WHERE operator_directed_flag = N'YES' AND process = 'Cycle Count' }
+		----  0
+		-------- (1 rows affected)
+39:                Call: DBUpd WKQ Assign w/Work Q ID                                 PASSED
+	2:             Database: Upd WKQ Assign w/Work Q ID                                   PASSED
+		SQL STATEMENT {
+			UPDATE t_work_q
+			SET work_status = 'A' ,
+				workers_assigned = ( workers_assigned + 1 )
+			WHERE wh_id = '01'
+				AND work_q_id = '117112'
+				AND (
+					(
+						workers_assigned = 0
+						AND work_type = '16'
+					)
+					OR work_type <> '16'
+				)
+				AND (
+					workers_assigned + 1
+				) <= workers_required
+		}
+		-------- (1 rows affected)
+41:                Call: DBCount WKA w/User ID,WKQ ID                                 PASSED
+	3:             Database: Count WKA w/User ID, WKQ ID                                  PASSED
+		SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_work_q_assignment WHERE user_assigned = 'ADK3' AND work_q_id = '117112' AND wh_id = '01' }
+		----  0
+		-------- (1 rows affected)
+43:                Call: DBIns WQA w/WKQ Id,User ID                                   PASSED
+	4:             Database: Ins WQA                                                      PASSED
+		SQL STATEMENT { INSERT INTO t_work_q_assignment ( work_q_id , status , user_assigned , wh_id ) VALUES ( '117112' , 'A' , 'ADK3' , '01' ) }
+		-------- (1 rows affected)
+45:             Execute: External PO - Upd EMP Process                                PASSED
+	6:             Database: Upd EMP Process w/User ID                                    PASSED
+		SQL STATEMENT { UPDATE t_employee SET last_menu_item = business_process , business_process = 'Cycle Count' , last_tran_start_datetime = GETDATE ( ) WHERE id = 'ADK3' AND wh_id = '01' }
+		-------- (1 rows affected)
+2:                 Call: Global Values - Cycle Count                                  PASSED
+	2:                 Call: DBList Whse Control - Cycle Count                            PASSED
+		1:             Database: List Whse Control - Cycle Count                              PASSED
+			SQL STATEMENT { SELECT wh_id , control_type , description , next_value , config_display , allow_edit , c1 , c2 , f1 FROM t_whse_control WHERE wh_id = '01' AND control_type IN ( 'ITM_UNIT_CNT_ENABLED' , 'LP_UNIT_CNT_ENABLED' , 'LP_ITM_CNT_ENABLED' , 'CC_LOST_LOC_ITEM' , 'CC_LOST_LOC_LP' , 'CC_LOST_LOC_MLP' , 'CC_SHOW_EXPECTED' ) }
+			----  01 CC_LOST_LOC_ITEM CC Lost Location Item 1 SHOW_VA 1 LOST
+			----  01 CC_LOST_LOC_LP CC Lost Location LP 1 SHOW_VA 1 LOSTLPN
+			----  01 CC_LOST_LOC_MLP CC Lost Location MLP 0 SHOW_VA 1 CC_LOST_LOC_MLP
+			----  01 CC_SHOW_EXPECTED CC Show Expected Count 0 SHOW_VA 1
+			----  01 ITM_UNIT_CNT_ENABLED CC Item Unit Cnt 0 SHOW_VA 1
+			----  01 LP_ITM_CNT_ENABLED CC LP Item Unit Cnt 0 SHOW_VA 1
+			----  01 LP_UNIT_CNT_ENABLED CC LP Unit Cnt 0 SHOW_VA 1
+			-------- (7 rows affected)
+10:                Call: DBUpd WKQ Sts w/Type,Sts=H                                   PASSED
+	3:             Database: Upd WKQ Sts w/Type,Sts=H                                     PASSED
+		SQL STATEMENT { UPDATE t_work_q SET work_status = 'U' WHERE work_type = '08' AND work_status = 'H' AND wh_id = '01' }
+		-------- (0 rows affected)
+11:                Call: DBFind WKQ (Location) w/Work Q ID                            PASSED
+	2:             Database: Find WKQ (Location) w/Work Q ID                              PASSED
+		SQL STATEMENT { SELECT location_id FROM t_work_q WHERE work_q_id = '117112' AND wh_id = '01' }
+		----  LH-STR03
+		-------- (1 rows affected)
