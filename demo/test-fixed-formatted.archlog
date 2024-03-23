@@ -1,0 +1,1789 @@
+54:             Execute: External PO - Cycle Count                                    PASSED
+	...
+	1:         Dynamic Call: Execute PO                                                   PASSED
+		...
+		14:                Call: CC Location                                                  PASSED
+			...
+			13:                Call: CC Location LP                                               PASSED
+				...
+				12:                Call: CC - LP                                                      PASSED
+					...
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '800' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '800' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000984' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '800' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000984' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 1' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '800' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '800' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000985' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '800' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000985' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 2' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '800' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '800' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000986' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '800' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000986' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 3' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '800' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '800' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000987' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '800' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000987' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 4' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '800' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '800' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000988' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '800' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000988' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 5' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '800' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '800' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00006970' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----     SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     FAILED
+				27:                Call: DBFind HUM w/HU                                              PASSED
+					1:              Compare: HU ID = ""?                                                  FAILED
+					2:             Database: Find HUM w/HU                                                PASSED
+						SQL STATEMENT { SELECT hu_id , type , control_number , location_id , subtype , status , fifo_date , wh_id , load_position , haz_material , load_id , load_seq , ver_flag , zone , reserved_for , container_type , stop_id , parent_hu_id , user_id FROM t_hu_master WHERE hu_id = 'LP00006970' AND wh_id = '01' }
+						-------- (0 rows affected)
+					5:               Return: PASS                                                         PASSED
+				28:             Compare: SQL Count > 0?                                               FAILED
+				40:                Call: CC Add Item                                                  PASSED
+					2:            Calculate: Local FLAG CC Item Unit Count Enabled = FLAG CC Item Un...   PASSED
+					3:            Calculate: Local Cycle Count Lost Location = Cycle Count Lost Location  PASSED
+					5:            Calculate: Local Item ID = Item ID                                      PASSED
+					6:            Calculate: FLAG CC Item Unit Count Enabled = 0                          PASSED
+					7:            Calculate: Cycle Count Lost Location = Cycle Count Lost Location Item   PASSED
+					9:              Compare: HU ID = ""?                                                  FAILED
+					10:           Calculate: Transaction Code = "802"                                     PASSED
+					11:                Call: CC - Add LP Item                                             PASSED
+						1:            Calculate: Client Code = ""                                             PASSED
+						2:            Calculate: ScrTxt: Enter Item Number                                    PASSED
+						3:            Calculate: ScrOpt: F3:Done                                              PASSED
+						4:                 Call: Dialog                                                       PASSED
+							2:                 Call: Enhanced RF Constructor                                      PASSED
+								2:            Calculate: RF JSON String = ""                                          PASSED
+								3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+								4:            Calculate: RF JSON List String = ""                                     PASSED
+								6:            Calculate: RF Mask Character = "*"                                      PASSED
+								8:                 Call: RF JSON Build LP Contents                                    PASSED
+									1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+									23:              Return: PASS                                                         PASSED
+								10:                Call: RF JSON Build List                                           PASSED
+									2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+									3:            Calculate: Local List Row = List Row                                    PASSED
+									4:            Calculate: Local Max Choices = Max Choices                              PASSED
+									6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+									9:                 List: Dialog - Clear List                                          PASSED
+									28:                List: MNU - Row Count                                              PASSED
+									29:             Compare: List Row Count > 0?                                          FAILED
+									41:           Calculate: List Row = Local List Row                                    PASSED
+									42:           Calculate: Max Choices = Local Max Choices                              PASSED
+									43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+									44:              Return: PASS                                                         PASSED
+								12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+									1:             Database: Exec SF Build RF JSON String                                 PASSED
+										SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , 'Scan the item number.' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , 'Cycle Count' , 'F3:Done ' , NULL , 'ITEM ID' , NULL , '*' , 'PROMPT' ) }
+										---- 
+										-------- (1 rows affected)
+									6:               Return: PASS                                                         PASSED
+								14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+								15:              Return: PASS                                                         PASSED
+							5:              Compare: Flag Employee Log Input Set?                                 FAILED
+							8:              Compare: Dialog Type = Dialog Type List?                              FAILED
+							9:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							10:             Compare: Dialog Type = Dialog Type List CC?                           FAILED
+							15:           Calculate: Set SCR Lengths                                              PASSED
+							16:             Compare: Dialog Type = Dialog Type Prompt CC Quantity?                FAILED
+							17:             Compare: Dialog Type = Dialog Type Confirm?                           FAILED
+							18:             Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							25:                Call: Dialog - Prompt                                              PASSED
+								1:              Compare: SCR_HELP = ""?                                               FAILED
+								2:              Compare: SCR_OPTIONS = ""?                                            FAILED
+								10:             Compare: SCR_OPTIONS Length > 20?                                     FAILED
+								11:             Compare: SCR_HELP Length > 40?                                        FAILED
+								15:              Dialog: PRMT-1:OPT-LINES-S                                           PASSED
+								38:              Return: PASS                                                         PASSED
+							32:             Compare: EMP Log Input Flag Set?                                      FAILED
+							34:              Return: PASS                                                         PASSED
+						7:              Compare: Dialog Field = ""?                                           FAILED
+						8:            Calculate: Item ID = Dialog Field                                       PASSED
+						9:            Calculate: Client Code = ""                                             PASSED
+						10:                Call: Verify Item                                                  PASSED
+							1:            Calculate: Local SCR = SCR                                              PASSED
+							2:              Compare: Item ID = ""?                                                FAILED
+							4:              Compare: Client Code = ""?                                            PASSED
+							5:                 Call: List Item Clients                                            PASSED
+								1:            Calculate: Local ScrOptions = SCR_OPTIONS                               PASSED
+								3:            Calculate: Clear SCREEN HELP                                            PASSED
+								5:            Calculate: SCR_OPTIONS = ""                                             PASSED
+								6:                 List: Dialog - Clear List                                          PASSED
+								7:                 Call: DBExec SF List Client Codes                                  PASSED
+									1:             Database: Exec SF List Client Codes                                    PASSED
+										SQL STATEMENT { SELECT row_number , client_name , item_number FROM usf_list_client_codes ( '01' , '226104-001' ) }
+										----  1 Austin 226104-001
+										-------- (1 rows affected)
+									4:               Return: PASS                                                         PASSED
+								8:                 List: Dialog - Row Count                                           PASSED
+								9:              Compare: Max Choices > 1?                                             FAILED
+								14:           Calculate: SCR_OPTIONS = Local ScrOptions                               PASSED
+								15:              Return: PASS                                                         PASSED
+							6:                 Call: DBExec SP Verify Item                                        PASSED
+								1:             Database: Exec SP Verify Item                                          PASSED
+									SQL STATEMENT { DECLARE @out_vchItemNumber NVARCHAR ( 30 ) , @out_vchItemDesc NVARCHAR ( 60 ) , @out_vchDisplayItemNum NVARCHAR ( 30 ) , @out_vchClientCode NVARCHAR ( 30 ) , @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchLotControl NVARCHAR ( 1 ) , @out_vchSerialControl NVARCHAR ( 1 ) , @out_vchExpDateControl NVARCHAR ( 1 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_verify_item '01' , '226104-001' , NULL , @out_vchItemNumber OUTPUT , @out_vchItemDesc OUTPUT , @out_vchDisplayItemNum OUTPUT , @out_vchClientCode OUTPUT , @out_vchLotControl OUTPUT , @out_vchSerialControl OUTPUT , @out_vchExpDateControl OUTPUT , @out_vchSysShortMsg OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchItemNumber , @out_vchItemDesc , @out_vchDisplayItemNum , @out_vchClientCode , @out_vchLotControl , @out_vchSerialControl , @out_vchExpDateControl , @out_vchSysShortMsg , @out_vchCode , @out_vchMsg }
+									----  226104-001 LAOS PILLOW-HMONG-SET OF 2-20" 226104-001 01 N N N  SUCCESS NONE
+									-------- (1 rows affected)
+								4:               Return: PASS                                                         PASSED
+							7:              Compare: SYS_SHORTMSG = ""?                                           PASSED
+							8:            Calculate: Item ID = ITM Item Number                                    PASSED
+							9:            Calculate: Item Desc = ITM Description                                  PASSED
+							10:           Calculate: Display Item ID = ITM Display Item Number                    PASSED
+							11:           Calculate: Client Code = ITM Client Code                                PASSED
+							12:           Calculate: SCR = LOCAL SCR                                              PASSED
+							13:              Return: PASS                                                         PASSED
+						11:              Return: PASS                                                         PASSED
+					16:           Calculate: Reason Code = ""                                             PASSED
+					17:                Call: CC - Add Lot                                                 PASSED
+						1:              Compare: ITM Lot Control = "F"?                                       FAILED
+						2:            Calculate: Lot Number = ""                                              PASSED
+						14:              Return: PASS                                                         PASSED
+					19:                Call: CC - Expiration Date                                         PASSED
+						1:              Compare: ITM Expiration Date Control = "Y"?                           FAILED
+						2:            Calculate: Expiration Date = ""                                         PASSED
+						3:            Calculate: STO Expire Date = Expire Date                                PASSED
+						18:              Return: PASS                                                         PASSED
+					21:                Call: Recall Check - Warning                                       PASSED
+						2:            Calculate: Hold Reason ID = ""                                          PASSED
+						3:            Calculate: Local Location = Location                                    PASSED
+						4:            Calculate: Local Storage Type = Storage Type                            PASSED
+						5:            Calculate: Storage Type = "STORAGE"                                     PASSED
+						6:              Compare: Transaction Code = "853"? - Inventory Adjust by Master HU    FAILED
+						7:              Compare: Transaction Code = "852"? - Inventory Adjust by HU           FAILED
+						8:              Compare: Transaction Code = "851"? - Inventory Adjust by Location     FAILED
+						9:              Compare: Transaction Code = "543"? - Increment Inventory              FAILED
+						10:           Calculate: Location = Fork ID                                           PASSED
+						11:                Call: DBCount STO w/Keys                                           PASSED
+							1:              Compare: Location = ""?                                               FAILED
+							2:              Compare: Item ID = ""?                                                FAILED
+							3:             Database: Count STO w/Keys                                             PASSED
+								SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_stored_item WHERE wh_id = '01' AND location_id = 'DAV' AND hu_id = 'LP00006970' AND item_number = '226104-001' AND type = 0 AND lot_number IS NULL AND stored_attribute_id IS NULL }
+								----  0
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						12:             Compare: DBRecCount > 0?                                              FAILED
+						14:                Call: DBFind RCL TOP 1 HOLD Reason ID w/Keys                       PASSED
+							1:              Compare: Item ID = ""?                                                FAILED
+							2:             Database: Find RCL TOP 1 HOLD Reason ID w/Keys                         PASSED
+								SQL STATEMENT { SELECT TOP 1 reason_id FROM t_recall WHERE wh_id = '01' AND item_number = '226104-001' AND ( lot_number IS NULL OR lot_number IS NULL ) AND ( stored_attribute_id IS NULL OR stored_attribute_id IS NULL ) AND rescinded_by IS NULL ORDER BY date_created ASC }
+								-------- (0 rows affected)
+							5:               Return: PASS                                                         PASSED
+						15:             Compare: SQL Count > 0?                                               FAILED
+						18:           Calculate: Storage Type = Local Strg Type                               PASSED
+						19:           Calculate: Location = Local Location                                    PASSED
+						20:              Return: PASS                                                         PASSED
+					22:                Call: CC - Add Quantity                                            PASSED
+						2:            Calculate: Multiple CC UOM Qty ID = SYS_UNIQUEID                        PASSED
+						4:            Calculate: Previous Quantity = 0                                        PASSED
+						5:            Calculate: Quantity Behavior = "Count"                                  PASSED
+						6:                 Call: Universal Quantity                                           PASSED
+							2:            Calculate: Local Qty = Quantity                                         PASSED
+							3:            Calculate: Local SCR = SCR                                              PASSED
+							4:              Compare: Quantity Behavior = "Count"?                                 PASSED
+							9:                 Call: Universal Quantity - Count                                   PASSED
+								1:            Calculate: Quantity Accumulated = 0                                     PASSED
+								3:                 Call: DBExec SP Set Flag Multiple UOMs                             PASSED
+									1:              Compare: Item ID = ""?                                                FAILED
+									2:             Database: Exec SP Set FLAG Multiple UOMs                               PASSED
+										SQL STATEMENT { DECLARE @out_nFLAGMultipleUOMs INT , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_set_flag_multiple_uoms '01' , '226104-001' , @out_nFLAGMultipleUOMs OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_nFLAGMultipleUOMs , @out_vchCode , @out_vchMsg }
+										----  0 SUCCESS NONE
+										-------- (1 rows affected)
+									3:              Compare: OutCode = "SUCCESS"?                                         PASSED
+									6:               Return: PASS                                                         PASSED
+								4:              Compare: FLAG Multiple UOMs Set?                                      FAILED
+								5:            Calculate: UOM Conversion Factor = 1                                    PASSED
+								10:                Call: Universal Quantity - CC Quantity                             PASSED
+									2:              Compare: FLAG CC Item Unit Count Enabled?                             FAILED
+									6:            Calculate: SCR_HELP1 = ""                                               PASSED
+									7:            Calculate: SCR_HELP2 = ""                                               PASSED
+									8:              Compare: ITM Lot Control = "F"?                                       FAILED
+									10:             Compare: ITM Expiration Date Control = "Y"?                           FAILED
+									13:           Calculate: ScrTxt: Enter Qty of Item w/o Display List                   PASSED
+									14:                Call: Dialog                                                       PASSED
+										2:                 Call: Enhanced RF Constructor                                      PASSED
+											2:            Calculate: RF JSON String = ""                                          PASSED
+											3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+											4:            Calculate: RF JSON List String = ""                                     PASSED
+											6:            Calculate: RF Mask Character = "*"                                      PASSED
+											8:                 Call: RF JSON Build LP Contents                                    PASSED
+												1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+												23:              Return: PASS                                                         PASSED
+											10:                Call: RF JSON Build List                                           PASSED
+												2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+												3:            Calculate: Local List Row = List Row                                    PASSED
+												4:            Calculate: Local Max Choices = Max Choices                              PASSED
+												6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+												9:                 List: Dialog - Clear List                                          PASSED
+												28:                List: MNU - Row Count                                              PASSED
+												29:             Compare: List Row Count > 0?                                          FAILED
+												41:           Calculate: List Row = Local List Row                                    PASSED
+												42:           Calculate: Max Choices = Local Max Choices                              PASSED
+												43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+												44:              Return: PASS                                                         PASSED
+											12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+												1:             Database: Exec SF Build RF JSON String                                 PASSED
+													SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , 'Enter qty of 226104-001 (LAOS PILLOW-HMONG-SET OF 2-20").' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , 'Cycle Count' , NULL , NULL , 'QUANTITY' , NULL , '*' , 'PROMPT' ) }
+													---- 
+													-------- (1 rows affected)
+												6:               Return: PASS                                                         PASSED
+											14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+											15:              Return: PASS                                                         PASSED
+										5:              Compare: Flag Employee Log Input Set?                                 FAILED
+										8:              Compare: Dialog Type = Dialog Type List?                              FAILED
+										9:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+										10:             Compare: Dialog Type = Dialog Type List CC?                           FAILED
+										15:           Calculate: Set SCR Lengths                                              PASSED
+										16:             Compare: Dialog Type = Dialog Type Prompt CC Quantity?                FAILED
+										17:             Compare: Dialog Type = Dialog Type Confirm?                           FAILED
+										18:             Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+										25:                Call: Dialog - Prompt                                              PASSED
+											1:              Compare: SCR_HELP = ""?                                               FAILED
+											2:              Compare: SCR_OPTIONS = ""?                                            PASSED
+											4:              Compare: SCR_HELP Length >= 60?                                       FAILED
+											8:               Dialog: PRMT-0:OPT-LINES-S                                           PASSED
+											[:Line [:Watched "[Item ID] is already being watched!"]]
+											38:              Return: PASS                                                         PASSED
+										32:             Compare: EMP Log Input Flag Set?                                      FAILED
+										34:              Return: PASS                                                         PASSED
+									16:           Calculate: Quantity = Dialog Field                                      PASSED
+									17:              Return: PASS                                                         PASSED
+								14:                Call: Universal Quantity - Verify Quantity                         PASSED
+									2:              Compare: Dialog Field = ""?                                           FAILED
+									3:            Calculate: Length = Length[Dialog Field]                                PASSED
+									4:              Compare: Length < 13?                                                 PASSED
+									5:                 Call: Universal Quantity - Valid Number                            PASSED
+										1:              Compare: Dialog Field = ""?                                           FAILED
+										3:             Database: IsNumeric                                                    PASSED
+											SQL STATEMENT { SELECT ISNUMERIC ( '1' ) }
+											----  1
+											-------- (1 rows affected)
+										6:              Compare: SQL IsNumeric FLAG = 1?                                      PASSED
+										7:               Return: PASS                                                         PASSED
+									7:            Calculate: Validation Text = Dialog Field                               PASSED
+									9:            Calculate: Validation Type = "Quantity"                                 PASSED
+									11:                Call: Format Validation Check                                      PASSED
+										1:            Calculate: Clear Validation Regex                                       PASSED
+										2:            Calculate: Clear Validation Result                                      PASSED
+										4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+											1:              Compare: Warehouse ID = ""?                                           FAILED
+											2:              Compare: Validation Type = ""?                                        FAILED
+											3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+												SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'Quantity' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '802' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'Quantity' AND fvo.tran_type = '802' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'Quantity' AND status = 'Active' ) END }
+												---- 
+												-------- (1 rows affected)
+											6:               Return: PASS                                                         PASSED
+										5:              Compare: SQL Count > 0?                                               PASSED
+										7:              Compare: Validation Regex = ""?                                       PASSED
+										11:              Return: PASS                                                         PASSED
+									12:           Calculate: Quantity = Dialog Field                                      PASSED
+									14:             Compare: Transaction Code = "155"? - Adjust Receipt of Shipment       FAILED
+									15:             Compare: Quantity Behavior = "Count"?                                 PASSED
+									18:             Compare: Quantity >= 0?                                               PASSED
+									20:             Compare: Quantity <= 999999?                                          PASSED
+									21:              Return: PASS                                                         PASSED
+								16:                Call: Accumulated CC Count UOM Quantity                            PASSED
+									1:              Compare: UOM Conversion Factor = 0?                                   FAILED
+									4:            Calculate: UOM Qty = Quantity                                           PASSED
+									5:            Calculate: Local Quantity = UOM Conversion Factor * UOM Qty             PASSED
+									6:            Calculate: Qty Accumulated += Local Quantity                            PASSED
+									7:            Calculate: Quantity = Qty Accumulated                                   PASSED
+									9:              Compare: FLAG CC Item Unit Count Failed Set?                          FAILED
+									11:              Return: PASS                                                         PASSED
+								17:             Compare: FLAG Multiple UOMs Set?                                      FAILED
+								21:              Return: PASS                                                         PASSED
+							15:                Call: Universal Serial Number                                      PASSED
+								2:            Calculate: Serial Control = ITM Serial Control                          PASSED
+								3:              Compare: Transaction Code = "272"? - Is this Kit Completion (Rem...   FAILED
+								4:              Compare: Transaction Code = "275"? - Is this Unkitting (Create C...   FAILED
+								6:                 Call: Check Serial Number Tracking                                 FAILED
+									2:              Compare: Transaction Code = "540"? - Warehouse Transfer Out (Pick)    FAILED
+									3:              Compare: Transaction Code = "545"? - Miscellaneous Issue (pick)       FAILED
+									5:            Calculate: TRN Process Type = ""                                        PASSED
+									6:              Compare: Serial Control = "F"?                                        FAILED
+									7:              Compare: Serial Control = "I"?                                        FAILED
+									8:              Compare: Serial Control = "O"?                                        FAILED
+									9:              Compare: Serial Control = "T"?                                        FAILED
+									23:              Return: FAIL                                                         FAILED
+								63:              Return: PASS                                                         PASSED
+							19:              Return: PASS                                                         PASSED
+						10:             Compare: Quantity = 0?                                                FAILED
+						11:           Calculate: Previous Quantity = Quantity                                 PASSED
+						13:           Calculate: Status = "A"                                                 PASSED
+						14:           Calculate: Expected Qty = 0                                             PASSED
+						15:                Call: DBFind STO w/Keys                                            PASSED
+							1:              Compare: Location = ""?                                               FAILED
+							2:              Compare: Item ID = ""?                                                FAILED
+							3:             Database: Find STO w/Keys                                              PASSED
+								SQL STATEMENT { SELECT CAST ( sto_id AS NVARCHAR ( 20 ) ) , sequence , item_number , actual_qty , unavailable_qty , status , wh_id , location_id , fifo_date , expiration_date , reserved_for , lot_number , inspection_code , type , put_away_location , CAST ( stored_attribute_id AS VARCHAR ( 20 ) ) , shipment_number FROM t_stored_item WHERE location_id = 'FR-01-D-1-R' AND item_number = '226104-001' AND lot_number IS NULL AND wh_id = '01' AND stored_attribute_id IS NULL AND hu_id = 'LP00006970' AND type = 0 }
+								-------- (0 rows affected)
+							6:               Return: PASS                                                         PASSED
+						16:             Compare: SQL Count > 0?                                               FAILED
+						20:              Return: PASS                                                         PASSED
+					24:                Call: CC - Add Quantity Recount                                    PASSED
+						1:              Compare: Quantity = 0?                                                FAILED
+						3:            Calculate: Err: Recount Quantity                                        PASSED
+						6:            Calculate: Quantity Behavior = "Count"                                  PASSED
+						7:                 Call: Universal Quantity                                           PASSED
+							2:            Calculate: Local Qty = Quantity                                         PASSED
+							3:            Calculate: Local SCR = SCR                                              PASSED
+							4:              Compare: Quantity Behavior = "Count"?                                 PASSED
+							9:                 Call: Universal Quantity - Count                                   PASSED
+								1:            Calculate: Quantity Accumulated = 0                                     PASSED
+								3:                 Call: DBExec SP Set Flag Multiple UOMs                             PASSED
+									1:              Compare: Item ID = ""?                                                FAILED
+									2:             Database: Exec SP Set FLAG Multiple UOMs                               PASSED
+										SQL STATEMENT { DECLARE @out_nFLAGMultipleUOMs INT , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_set_flag_multiple_uoms '01' , '226104-001' , @out_nFLAGMultipleUOMs OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_nFLAGMultipleUOMs , @out_vchCode , @out_vchMsg }
+										----  0 SUCCESS NONE
+										-------- (1 rows affected)
+									3:              Compare: OutCode = "SUCCESS"?                                         PASSED
+									6:               Return: PASS                                                         PASSED
+								4:              Compare: FLAG Multiple UOMs Set?                                      FAILED
+								5:            Calculate: UOM Conversion Factor = 1                                    PASSED
+								10:                Call: Universal Quantity - CC Quantity                             PASSED
+									2:              Compare: FLAG CC Item Unit Count Enabled?                             FAILED
+									6:            Calculate: SCR_HELP1 = ""                                               PASSED
+									7:            Calculate: SCR_HELP2 = ""                                               PASSED
+									8:              Compare: ITM Lot Control = "F"?                                       FAILED
+									10:             Compare: ITM Expiration Date Control = "Y"?                           FAILED
+									13:           Calculate: ScrTxt: Enter Qty of Item w/o Display List                   PASSED
+									14:                Call: Dialog                                                       PASSED
+										2:                 Call: Enhanced RF Constructor                                      PASSED
+											2:            Calculate: RF JSON String = ""                                          PASSED
+											3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+											4:            Calculate: RF JSON List String = ""                                     PASSED
+											6:            Calculate: RF Mask Character = "*"                                      PASSED
+											8:                 Call: RF JSON Build LP Contents                                    PASSED
+												1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+												23:              Return: PASS                                                         PASSED
+											10:                Call: RF JSON Build List                                           PASSED
+												2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+												3:            Calculate: Local List Row = List Row                                    PASSED
+												4:            Calculate: Local Max Choices = Max Choices                              PASSED
+												6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+												9:                 List: Dialog - Clear List                                          PASSED
+												28:                List: MNU - Row Count                                              PASSED
+												29:             Compare: List Row Count > 0?                                          FAILED
+												41:           Calculate: List Row = Local List Row                                    PASSED
+												42:           Calculate: Max Choices = Local Max Choices                              PASSED
+												43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+												44:              Return: PASS                                                         PASSED
+											12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+												1:             Database: Exec SF Build RF JSON String                                 PASSED
+													SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , 'Enter qty of 226104-001 (LAOS PILLOW-HMONG-SET OF 2-20").' , NULL , NULL , NULL , NULL , NULL , NULL , 'RECOUNT QUANTITY' , 'Cycle Count' , NULL , NULL , 'QUANTITY' , NULL , '*' , 'PROMPT' ) }
+													---- 
+													-------- (1 rows affected)
+												6:               Return: PASS                                                         PASSED
+											14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+											15:              Return: PASS                                                         PASSED
+										5:              Compare: Flag Employee Log Input Set?                                 FAILED
+										8:              Compare: Dialog Type = Dialog Type List?                              FAILED
+										9:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+										10:             Compare: Dialog Type = Dialog Type List CC?                           FAILED
+										15:           Calculate: Set SCR Lengths                                              PASSED
+										16:             Compare: Dialog Type = Dialog Type Prompt CC Quantity?                FAILED
+										17:             Compare: Dialog Type = Dialog Type Confirm?                           FAILED
+										18:             Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+										25:                Call: Dialog - Prompt                                              PASSED
+											1:              Compare: SCR_HELP = ""?                                               FAILED
+											2:              Compare: SCR_OPTIONS = ""?                                            PASSED
+											4:              Compare: SCR_HELP Length >= 60?                                       FAILED
+											8:               Dialog: PRMT-0:OPT-LINES-S                                           PASSED
+											38:              Return: PASS                                                         PASSED
+										32:             Compare: EMP Log Input Flag Set?                                      FAILED
+										34:              Return: PASS                                                         PASSED
+									16:           Calculate: Quantity = Dialog Field                                      PASSED
+									17:              Return: PASS                                                         PASSED
+								14:                Call: Universal Quantity - Verify Quantity                         PASSED
+									2:              Compare: Dialog Field = ""?                                           FAILED
+									3:            Calculate: Length = Length[Dialog Field]                                PASSED
+									4:              Compare: Length < 13?                                                 PASSED
+									5:                 Call: Universal Quantity - Valid Number                            PASSED
+										1:              Compare: Dialog Field = ""?                                           FAILED
+										3:             Database: IsNumeric                                                    PASSED
+											SQL STATEMENT { SELECT ISNUMERIC ( '1' ) }
+											----  1
+											-------- (1 rows affected)
+										6:              Compare: SQL IsNumeric FLAG = 1?                                      PASSED
+										7:               Return: PASS                                                         PASSED
+									7:            Calculate: Validation Text = Dialog Field                               PASSED
+									9:            Calculate: Validation Type = "Quantity"                                 PASSED
+									11:                Call: Format Validation Check                                      PASSED
+										1:            Calculate: Clear Validation Regex                                       PASSED
+										2:            Calculate: Clear Validation Result                                      PASSED
+										4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+											1:              Compare: Warehouse ID = ""?                                           FAILED
+											2:              Compare: Validation Type = ""?                                        FAILED
+											3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+												SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'Quantity' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '802' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'Quantity' AND fvo.tran_type = '802' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'Quantity' AND status = 'Active' ) END }
+												---- 
+												-------- (1 rows affected)
+											6:               Return: PASS                                                         PASSED
+										5:              Compare: SQL Count > 0?                                               PASSED
+										7:              Compare: Validation Regex = ""?                                       PASSED
+										11:              Return: PASS                                                         PASSED
+									12:           Calculate: Quantity = Dialog Field                                      PASSED
+									14:             Compare: Transaction Code = "155"? - Adjust Receipt of Shipment       FAILED
+									15:             Compare: Quantity Behavior = "Count"?                                 PASSED
+									18:             Compare: Quantity >= 0?                                               PASSED
+									20:             Compare: Quantity <= 999999?                                          PASSED
+									21:              Return: PASS                                                         PASSED
+								16:                Call: Accumulated CC Count UOM Quantity                            PASSED
+									1:              Compare: UOM Conversion Factor = 0?                                   FAILED
+									4:            Calculate: UOM Qty = Quantity                                           PASSED
+									5:            Calculate: Local Quantity = UOM Conversion Factor * UOM Qty             PASSED
+									6:            Calculate: Qty Accumulated += Local Quantity                            PASSED
+									7:            Calculate: Quantity = Qty Accumulated                                   PASSED
+									9:              Compare: FLAG CC Item Unit Count Failed Set?                          FAILED
+									11:              Return: PASS                                                         PASSED
+								17:             Compare: FLAG Multiple UOMs Set?                                      FAILED
+								21:              Return: PASS                                                         PASSED
+							15:                Call: Universal Serial Number                                      PASSED
+								2:            Calculate: Serial Control = ITM Serial Control                          PASSED
+								3:              Compare: Transaction Code = "272"? - Is this Kit Completion (Rem...   FAILED
+								4:              Compare: Transaction Code = "275"? - Is this Unkitting (Create C...   FAILED
+								6:                 Call: Check Serial Number Tracking                                 FAILED
+									2:              Compare: Transaction Code = "540"? - Warehouse Transfer Out (Pick)    FAILED
+									3:              Compare: Transaction Code = "545"? - Miscellaneous Issue (pick)       FAILED
+									5:            Calculate: TRN Process Type = ""                                        PASSED
+									6:              Compare: Serial Control = "F"?                                        FAILED
+									7:              Compare: Serial Control = "I"?                                        FAILED
+									8:              Compare: Serial Control = "O"?                                        FAILED
+									9:              Compare: Serial Control = "T"?                                        FAILED
+									23:              Return: FAIL                                                         FAILED
+								63:              Return: PASS                                                         PASSED
+							19:              Return: PASS                                                         PASSED
+						13:             Compare: Quantity = 0?                                                FAILED
+						14:           Calculate: Qty Entered = Quantity                                       PASSED
+						15:             Compare: Previous Quantity = Quantity?                                PASSED
+						17:           Calculate: Status = "A"                                                 PASSED
+						18:           Calculate: Expected Qty = 0                                             PASSED
+						19:                Call: DBFind STO w/Keys                                            PASSED
+							1:              Compare: Location = ""?                                               FAILED
+							2:              Compare: Item ID = ""?                                                FAILED
+							3:             Database: Find STO w/Keys                                              PASSED
+								SQL STATEMENT { SELECT CAST ( sto_id AS NVARCHAR ( 20 ) ) , sequence , item_number , actual_qty , unavailable_qty , status , wh_id , location_id , fifo_date , expiration_date , reserved_for , lot_number , inspection_code , type , put_away_location , CAST ( stored_attribute_id AS VARCHAR ( 20 ) ) , shipment_number FROM t_stored_item WHERE location_id = 'FR-01-D-1-R' AND item_number = '226104-001' AND lot_number IS NULL AND wh_id = '01' AND stored_attribute_id IS NULL AND hu_id = 'LP00006970' AND type = 0 }
+								-------- (0 rows affected)
+							6:               Return: PASS                                                         PASSED
+						20:             Compare: SQL Count > 0?                                               FAILED
+						24:              Return: PASS                                                         PASSED
+					26:                Call: CC - TX Add Item                                             PASSED
+						1:                 List: TX - Clear List                                              PASSED
+						2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+						3:            Calculate: HU Type = "IV"                                               PASSED
+						4:            Calculate: Location = Source Location                                   PASSED
+						6:              Compare: Work Type = "09"? (COUNTCHK)                                 FAILED
+						7:                 Call: Adjust - Move Serial Number                                  PASSED
+							1:            Calculate: Local Tran Code = Tran Code                                  PASSED
+							2:            Calculate: Transaction Code = "855"                                     PASSED
+							3:              Compare: ITM Serial Control = "F"?                                    FAILED
+							33:           Calculate: Tran Code = Local Tran Code                                  PASSED
+							34:                List: Move SN - Clear List                                         PASSED
+							35:           Calculate: LOG Generic Text 1= ""                                       PASSED
+							36:           Calculate: LOG Generic Text 2= ""                                       PASSED
+							37:              Return: PASS                                                         PASSED
+						8:            Calculate: SN Process Type = "A"(Adjust)                                PASSED
+						10:                Call: DBExec SP CC Log Transaction Add Item                        PASSED
+							1:             Database: Exec SP CC Log Transaction Add Item                          PASSED
+								SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_new_item 'dvance' , '802' , '1340' , '01' , 'FR-01-D-1-R' , 'LP00006970' , NULL , '226104-001' , NULL , '01/01/1900' , 1 , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+								----  SUCCESS NONE
+								-------- (1 rows affected)
+							2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+							5:               Return: PASS                                                         PASSED
+						11:              Return: PASS                                                         PASSED
+					9:              Compare: HU ID = ""?                                                  FAILED
+					10:           Calculate: Transaction Code = "802"                                     PASSED
+					11:                Call: CC - Add LP Item                                             PASSED
+						1:            Calculate: Client Code = ""                                             PASSED
+						2:            Calculate: ScrTxt: Enter Item Number                                    PASSED
+						3:            Calculate: ScrOpt: F3:Done                                              PASSED
+						4:                 Call: Dialog                                                       PASSED
+							2:                 Call: Enhanced RF Constructor                                      PASSED
+								2:            Calculate: RF JSON String = ""                                          PASSED
+								3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+								4:            Calculate: RF JSON List String = ""                                     PASSED
+								6:            Calculate: RF Mask Character = "*"                                      PASSED
+								8:                 Call: RF JSON Build LP Contents                                    PASSED
+									1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+									23:              Return: PASS                                                         PASSED
+								10:                Call: RF JSON Build List                                           PASSED
+									2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+									3:            Calculate: Local List Row = List Row                                    PASSED
+									4:            Calculate: Local Max Choices = Max Choices                              PASSED
+									6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+									9:                 List: Dialog - Clear List                                          PASSED
+									28:                List: MNU - Row Count                                              PASSED
+									29:             Compare: List Row Count > 0?                                          FAILED
+									41:           Calculate: List Row = Local List Row                                    PASSED
+									42:           Calculate: Max Choices = Local Max Choices                              PASSED
+									43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+									44:              Return: PASS                                                         PASSED
+								12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+									1:             Database: Exec SF Build RF JSON String                                 PASSED
+										SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , 'Scan the item number.' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , 'Cycle Count' , 'F3:Done ' , NULL , 'ITEM ID' , NULL , '*' , 'PROMPT' ) }
+										---- 
+										-------- (1 rows affected)
+									6:               Return: PASS                                                         PASSED
+								14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+								15:              Return: PASS                                                         PASSED
+							5:              Compare: Flag Employee Log Input Set?                                 FAILED
+							8:              Compare: Dialog Type = Dialog Type List?                              FAILED
+							9:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							10:             Compare: Dialog Type = Dialog Type List CC?                           FAILED
+							15:           Calculate: Set SCR Lengths                                              PASSED
+							16:             Compare: Dialog Type = Dialog Type Prompt CC Quantity?                FAILED
+							17:             Compare: Dialog Type = Dialog Type Confirm?                           FAILED
+							18:             Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							25:                Call: Dialog - Prompt                                              PASSED
+								1:              Compare: SCR_HELP = ""?                                               FAILED
+								2:              Compare: SCR_OPTIONS = ""?                                            FAILED
+								10:             Compare: SCR_OPTIONS Length > 20?                                     FAILED
+								11:             Compare: SCR_HELP Length > 40?                                        FAILED
+								15:              Dialog: PRMT-1:OPT-LINES-S                                           PASSED
+								38:              Return: PASS                                                         PASSED
+							32:             Compare: EMP Log Input Flag Set?                                      FAILED
+							34:              Return: PASS                                                         PASSED
+						7:              Compare: Dialog Field = ""?                                           FAILED
+						8:            Calculate: Item ID = Dialog Field                                       PASSED
+						9:            Calculate: Client Code = ""                                             PASSED
+						10:                Call: Verify Item                                                  PASSED
+							1:            Calculate: Local SCR = SCR                                              PASSED
+							2:              Compare: Item ID = ""?                                                FAILED
+							4:              Compare: Client Code = ""?                                            PASSED
+							5:                 Call: List Item Clients                                            PASSED
+								1:            Calculate: Local ScrOptions = SCR_OPTIONS                               PASSED
+								3:            Calculate: Clear SCREEN HELP                                            PASSED
+								5:            Calculate: SCR_OPTIONS = ""                                             PASSED
+								6:                 List: Dialog - Clear List                                          PASSED
+								7:                 Call: DBExec SF List Client Codes                                  PASSED
+									1:             Database: Exec SF List Client Codes                                    PASSED
+										SQL STATEMENT { SELECT row_number , client_name , item_number FROM usf_list_client_codes ( '01' , '226104-001' ) }
+										----  1 Austin 226104-001
+										-------- (1 rows affected)
+									4:               Return: PASS                                                         PASSED
+								8:                 List: Dialog - Row Count                                           PASSED
+								9:              Compare: Max Choices > 1?                                             FAILED
+								14:           Calculate: SCR_OPTIONS = Local ScrOptions                               PASSED
+								15:              Return: PASS                                                         PASSED
+							6:                 Call: DBExec SP Verify Item                                        PASSED
+								1:             Database: Exec SP Verify Item                                          PASSED
+									SQL STATEMENT { DECLARE @out_vchItemNumber NVARCHAR ( 30 ) , @out_vchItemDesc NVARCHAR ( 60 ) , @out_vchDisplayItemNum NVARCHAR ( 30 ) , @out_vchClientCode NVARCHAR ( 30 ) , @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchLotControl NVARCHAR ( 1 ) , @out_vchSerialControl NVARCHAR ( 1 ) , @out_vchExpDateControl NVARCHAR ( 1 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_verify_item '01' , '226104-001' , NULL , @out_vchItemNumber OUTPUT , @out_vchItemDesc OUTPUT , @out_vchDisplayItemNum OUTPUT , @out_vchClientCode OUTPUT , @out_vchLotControl OUTPUT , @out_vchSerialControl OUTPUT , @out_vchExpDateControl OUTPUT , @out_vchSysShortMsg OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchItemNumber , @out_vchItemDesc , @out_vchDisplayItemNum , @out_vchClientCode , @out_vchLotControl , @out_vchSerialControl , @out_vchExpDateControl , @out_vchSysShortMsg , @out_vchCode , @out_vchMsg }
+									----  226104-001 LAOS PILLOW-HMONG-SET OF 2-20" 226104-001 01 N N N  SUCCESS NONE
+									-------- (1 rows affected)
+								4:               Return: PASS                                                         PASSED
+							7:              Compare: SYS_SHORTMSG = ""?                                           PASSED
+							8:            Calculate: Item ID = ITM Item Number                                    PASSED
+							9:            Calculate: Item Desc = ITM Description                                  PASSED
+							10:           Calculate: Display Item ID = ITM Display Item Number                    PASSED
+							11:           Calculate: Client Code = ITM Client Code                                PASSED
+							12:           Calculate: SCR = LOCAL SCR                                              PASSED
+							13:              Return: PASS                                                         PASSED
+						11:              Return: PASS                                                         PASSED
+					16:           Calculate: Reason Code = ""                                             PASSED
+					17:                Call: CC - Add Lot                                                 PASSED
+						1:              Compare: ITM Lot Control = "F"?                                       FAILED
+						2:            Calculate: Lot Number = ""                                              PASSED
+						14:              Return: PASS                                                         PASSED
+					19:                Call: CC - Expiration Date                                         PASSED
+						1:              Compare: ITM Expiration Date Control = "Y"?                           FAILED
+						2:            Calculate: Expiration Date = ""                                         PASSED
+						3:            Calculate: STO Expire Date = Expire Date                                PASSED
+						18:              Return: PASS                                                         PASSED
+					21:                Call: Recall Check - Warning                                       PASSED
+						2:            Calculate: Hold Reason ID = ""                                          PASSED
+						3:            Calculate: Local Location = Location                                    PASSED
+						4:            Calculate: Local Storage Type = Storage Type                            PASSED
+						5:            Calculate: Storage Type = "STORAGE"                                     PASSED
+						6:              Compare: Transaction Code = "853"? - Inventory Adjust by Master HU    FAILED
+						7:              Compare: Transaction Code = "852"? - Inventory Adjust by HU           FAILED
+						8:              Compare: Transaction Code = "851"? - Inventory Adjust by Location     FAILED
+						9:              Compare: Transaction Code = "543"? - Increment Inventory              FAILED
+						10:           Calculate: Location = Fork ID                                           PASSED
+						11:                Call: DBCount STO w/Keys                                           PASSED
+							1:              Compare: Location = ""?                                               FAILED
+							2:              Compare: Item ID = ""?                                                FAILED
+							3:             Database: Count STO w/Keys                                             PASSED
+								SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_stored_item WHERE wh_id = '01' AND location_id = 'DAV' AND hu_id = 'LP00006970' AND item_number = '226104-001' AND type = 0 AND lot_number IS NULL AND stored_attribute_id IS NULL }
+								----  0
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						12:             Compare: DBRecCount > 0?                                              FAILED
+						14:                Call: DBFind RCL TOP 1 HOLD Reason ID w/Keys                       PASSED
+							1:              Compare: Item ID = ""?                                                FAILED
+							2:             Database: Find RCL TOP 1 HOLD Reason ID w/Keys                         PASSED
+								SQL STATEMENT { SELECT TOP 1 reason_id FROM t_recall WHERE wh_id = '01' AND item_number = '226104-001' AND ( lot_number IS NULL OR lot_number IS NULL ) AND ( stored_attribute_id IS NULL OR stored_attribute_id IS NULL ) AND rescinded_by IS NULL ORDER BY date_created ASC }
+								-------- (0 rows affected)
+							5:               Return: PASS                                                         PASSED
+						15:             Compare: SQL Count > 0?                                               FAILED
+						18:           Calculate: Storage Type = Local Strg Type                               PASSED
+						19:           Calculate: Location = Local Location                                    PASSED
+						20:              Return: PASS                                                         PASSED
+					22:                Call: CC - Add Quantity                                            FAILED
+						2:            Calculate: Multiple CC UOM Qty ID = SYS_UNIQUEID                        PASSED
+						4:            Calculate: Previous Quantity = 0                                        PASSED
+						5:            Calculate: Quantity Behavior = "Count"                                  PASSED
+						6:                 Call: Universal Quantity                                           FAILED
+							2:            Calculate: Local Qty = Quantity                                         PASSED
+							3:            Calculate: Local SCR = SCR                                              PASSED
+							4:              Compare: Quantity Behavior = "Count"?                                 PASSED
+							9:                 Call: Universal Quantity - Count                                   FAILED
+								1:            Calculate: Quantity Accumulated = 0                                     PASSED
+								3:                 Call: DBExec SP Set Flag Multiple UOMs                             PASSED
+									1:              Compare: Item ID = ""?                                                FAILED
+									2:             Database: Exec SP Set FLAG Multiple UOMs                               PASSED
+										SQL STATEMENT { DECLARE @out_nFLAGMultipleUOMs INT , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_set_flag_multiple_uoms '01' , '226104-001' , @out_nFLAGMultipleUOMs OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_nFLAGMultipleUOMs , @out_vchCode , @out_vchMsg }
+										----  0 SUCCESS NONE
+										-------- (1 rows affected)
+									3:              Compare: OutCode = "SUCCESS"?                                         PASSED
+									6:               Return: PASS                                                         PASSED
+								4:              Compare: FLAG Multiple UOMs Set?                                      FAILED
+								5:            Calculate: UOM Conversion Factor = 1                                    PASSED
+								10:                Call: Universal Quantity - CC Quantity                             FAILED
+									2:              Compare: FLAG CC Item Unit Count Enabled?                             FAILED
+									6:            Calculate: SCR_HELP1 = ""                                               PASSED
+									7:            Calculate: SCR_HELP2 = ""                                               PASSED
+									8:              Compare: ITM Lot Control = "F"?                                       FAILED
+									10:             Compare: ITM Expiration Date Control = "Y"?                           FAILED
+									13:           Calculate: ScrTxt: Enter Qty of Item w/o Display List                   PASSED
+									14:                Call: Dialog                                                       FAILED
+										2:                 Call: Enhanced RF Constructor                                      PASSED
+											2:            Calculate: RF JSON String = ""                                          PASSED
+											3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+											4:            Calculate: RF JSON List String = ""                                     PASSED
+											6:            Calculate: RF Mask Character = "*"                                      PASSED
+											8:                 Call: RF JSON Build LP Contents                                    PASSED
+												1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+												23:              Return: PASS                                                         PASSED
+											10:                Call: RF JSON Build List                                           PASSED
+												2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+												3:            Calculate: Local List Row = List Row                                    PASSED
+												4:            Calculate: Local Max Choices = Max Choices                              PASSED
+												6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+												9:                 List: Dialog - Clear List                                          PASSED
+												28:                List: MNU - Row Count                                              PASSED
+												29:             Compare: List Row Count > 0?                                          FAILED
+												41:           Calculate: List Row = Local List Row                                    PASSED
+												42:           Calculate: Max Choices = Local Max Choices                              PASSED
+												43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+												44:              Return: PASS                                                         PASSED
+											12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+												1:             Database: Exec SF Build RF JSON String                                 PASSED
+													SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , 'Enter qty of 226104-001 (LAOS PILLOW-HMONG-SET OF 2-20").' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , 'Cycle Count' , NULL , NULL , 'QUANTITY' , NULL , '*' , 'PROMPT' ) }
+													---- 
+													-------- (1 rows affected)
+												6:               Return: PASS                                                         PASSED
+											14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+											15:              Return: PASS                                                         PASSED
+										5:              Compare: Flag Employee Log Input Set?                                 FAILED
+										8:              Compare: Dialog Type = Dialog Type List?                              FAILED
+										9:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+										10:             Compare: Dialog Type = Dialog Type List CC?                           FAILED
+										15:           Calculate: Set SCR Lengths                                              PASSED
+										16:             Compare: Dialog Type = Dialog Type Prompt CC Quantity?                FAILED
+										17:             Compare: Dialog Type = Dialog Type Confirm?                           FAILED
+										18:             Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+										25:                Call: Dialog - Prompt                                              FAILED
+											1:              Compare: SCR_HELP = ""?                                               FAILED
+											2:              Compare: SCR_OPTIONS = ""?                                            PASSED
+											4:              Compare: SCR_HELP Length >= 60?                                       FAILED
+											8:               Dialog: PRMT-0:OPT-LINES-S                                           FAILED
+											39:              Return: FAIL                                                         FAILED
+										36:             Compare: Security Policy = 4?                                         PASSED
+										37:             Compare: SYS_CANCEL = 0?                                              FAILED
+										39:             Compare: EMP Log Input Flag Set?                                      FAILED
+										41:              Return: FAIL                                                         FAILED
+									15:             Compare: <F1-Cancel>?                                                 PASSED
+									20:              Return: FAIL                                                         FAILED
+								11:             Compare: <F1-Cancel>?                                                 PASSED
+								12:             Compare: FLAG Multiple UOMs Set?                                      FAILED
+								24:              Return: FAIL                                                         FAILED
+							20:             Compare: <F1-Cancel>?                                                 PASSED
+							24:              Return: FAIL                                                         FAILED
+						7:              Compare: SYS_SHORTMSG = Err Data Error S?                             FAILED
+						8:              Compare: <F1-Cancel>?                                                 PASSED
+						23:              Return: FAIL                                                         FAILED
+					23:             Compare: ITM Lot Control = "F"?                                       FAILED
+					9:              Compare: HU ID = ""?                                                  FAILED
+					10:           Calculate: Transaction Code = "802"                                     PASSED
+					11:                Call: CC - Add LP Item                                             FAILED
+						1:            Calculate: Client Code = ""                                             PASSED
+						2:            Calculate: ScrTxt: Enter Item Number                                    PASSED
+						3:            Calculate: ScrOpt: F3:Done                                              PASSED
+						4:                 Call: Dialog                                                       FAILED
+							2:                 Call: Enhanced RF Constructor                                      PASSED
+								2:            Calculate: RF JSON String = ""                                          PASSED
+								3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+								4:            Calculate: RF JSON List String = ""                                     PASSED
+								6:            Calculate: RF Mask Character = "*"                                      PASSED
+								8:                 Call: RF JSON Build LP Contents                                    PASSED
+									1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+									23:              Return: PASS                                                         PASSED
+								10:                Call: RF JSON Build List                                           PASSED
+									2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+									3:            Calculate: Local List Row = List Row                                    PASSED
+									4:            Calculate: Local Max Choices = Max Choices                              PASSED
+									6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+									9:                 List: Dialog - Clear List                                          PASSED
+									28:                List: MNU - Row Count                                              PASSED
+									29:             Compare: List Row Count > 0?                                          FAILED
+									41:           Calculate: List Row = Local List Row                                    PASSED
+									42:           Calculate: Max Choices = Local Max Choices                              PASSED
+									43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+									44:              Return: PASS                                                         PASSED
+								12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+									1:             Database: Exec SF Build RF JSON String                                 PASSED
+										SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , 'Scan the item number.' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , 'Cycle Count' , 'F3:Done ' , NULL , 'ITEM ID' , NULL , '*' , 'PROMPT' ) }
+										---- 
+										-------- (1 rows affected)
+									6:               Return: PASS                                                         PASSED
+								14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+								15:              Return: PASS                                                         PASSED
+							5:              Compare: Flag Employee Log Input Set?                                 FAILED
+							8:              Compare: Dialog Type = Dialog Type List?                              FAILED
+							9:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							10:             Compare: Dialog Type = Dialog Type List CC?                           FAILED
+							15:           Calculate: Set SCR Lengths                                              PASSED
+							16:             Compare: Dialog Type = Dialog Type Prompt CC Quantity?                FAILED
+							17:             Compare: Dialog Type = Dialog Type Confirm?                           FAILED
+							18:             Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							25:                Call: Dialog - Prompt                                              FAILED
+								1:              Compare: SCR_HELP = ""?                                               FAILED
+								2:              Compare: SCR_OPTIONS = ""?                                            FAILED
+								10:             Compare: SCR_OPTIONS Length > 20?                                     FAILED
+								11:             Compare: SCR_HELP Length > 40?                                        FAILED
+								15:              Dialog: PRMT-1:OPT-LINES-S                                           FAILED
+								39:              Return: FAIL                                                         FAILED
+							36:             Compare: Security Policy = 4?                                         PASSED
+							37:             Compare: SYS_CANCEL = 0?                                              FAILED
+							39:             Compare: EMP Log Input Flag Set?                                      FAILED
+							41:              Return: FAIL                                                         FAILED
+						5:              Compare: <F3-Done>?                                                   PASSED
+						14:              Return: FAIL                                                         FAILED
+					12:             Compare: <F1-Cancel>?                                                 FAILED
+					27:           Calculate: FLAG CC Item Unit Count Enabled = Local FLAG CC Item Un...   PASSED
+					28:           Calculate: Cycle Count Lost Location = Local Cycle Count Lost Location  PASSED
+					29:           Calculate: Item ID = Local Item ID                                      PASSED
+					30:              Return: PASS                                                         PASSED
+				41:                Call: DBExec SP CC UPD HU Ver Flag                                 PASSED
+					1:              Compare: Location = ""?                                               FAILED
+					2:              Compare: Ver Flag = ""?                                               FAILED
+					3:             Database: Exec SP CC UPD HU Ver Flag                                   PASSED
+						SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_upd_hu_ver_flag '01' , 'FR-01-D-1-R' , 'LP00006970' , NULL , 'Y' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+						----  SUCCESS NONE
+						-------- (1 rows affected)
+					4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+					7:               Return: PASS                                                         PASSED
+				42:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 6' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '802' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '802' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000989' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '802' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000989' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 7' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					[:Line [:Watched "[Item ID] is already being watched!"]]
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '802' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '802' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000991' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '802' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000991' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 8' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '802' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '802' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000992' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '802' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000992' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      PASSED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 9' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                PASSED
+					15:             Compare: Dialog Field = ""?                                           FAILED
+					16:           Calculate: HU ID = Dialog Field                                         PASSED
+					18:           Calculate: Validation Text = Dialog Field                               PASSED
+					20:           Calculate: Validation Type = "License Plate"                            PASSED
+					22:                Call: Format Validation Check                                      PASSED
+						1:            Calculate: Clear Validation Regex                                       PASSED
+						2:            Calculate: Clear Validation Result                                      PASSED
+						4:                 Call: DBFind FVD Validation Regex w/Validation Type                PASSED
+							1:              Compare: Warehouse ID = ""?                                           FAILED
+							2:              Compare: Validation Type = ""?                                        FAILED
+							3:             Database: Find FVD Validation Regex w/Validation Type                  PASSED
+								SQL STATEMENT { SELECT CASE WHEN ( SELECT COUNT ( 1 ) FROM t_format_validation fvd LEFT OUTER JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvd.status = 'Active' AND fvo.status = 'Active' AND fvo.tran_type = '802' ) <> 0 THEN ( SELECT TOP 1 fvo.pattern FROM t_format_validation fvd JOIN t_format_validation_override fvo ON fvd.format_validation_id = fvo.format_validation_id WHERE fvd.wh_id = '01' AND fvd.field_type = 'License Plate' AND fvo.tran_type = '802' ) ELSE ( SELECT TOP 1 pattern FROM t_format_validation WHERE wh_id = '01' AND field_type = 'License Plate' AND status = 'Active' ) END }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						5:              Compare: SQL Count > 0?                                               PASSED
+						7:              Compare: Validation Regex = ""?                                       PASSED
+						11:              Return: PASS                                                         PASSED
+					23:           Calculate: HU Record Type = "LP"                                        PASSED
+					24:                Call: DBExec SP CC Verify LP/MLP Scan                              PASSED
+						1:             Database: Exec SP CC Verify LP/MLP Scan                                PASSED
+							SQL STATEMENT { DECLARE @out_vchSysShortMsg NVARCHAR ( 20 ) , @out_vchHumLocation NVARCHAR ( 50 ) , @out_vchHUMParentHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_verify_lp_mlp_scan '01' , 'LP00000993' , NULL , 'FR-01-D-1-R' , 'LP' , @out_vchSysShortMsg OUTPUT , @out_vchHumLocation OUTPUT , @out_vchHUMParentHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchSysShortMsg , @out_vchHumLocation , @out_vchHUMParentHUID , @out_vchCode , @out_vchMsg }
+							----   FR-01-D-1-R  SUCCESS NONE
+							-------- (1 rows affected)
+						4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					25:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					26:              Return: PASS                                                         PASSED
+				14:             Compare: HUM Location = Location?                                     PASSED
+				15:             Compare: HUM Parent HU ID = Master HU ID?                             PASSED
+				17:             Compare: FLAG CC LP Item Count Enabled?                               FAILED
+				18:                Call: CC - TX Count All Items                                      PASSED
+					1:                 List: TX - Clear List                                              PASSED
+					2:            Calculate: Storage Type = "STORAGE"                                     PASSED
+					3:            Calculate: HU Type = "IV"                                               PASSED
+					4:            Calculate: Location = Source Location                                   PASSED
+					16:                Call: DBExec SP CC Log Transaction Count All Items                 PASSED
+						1:             Database: Exec SP CC Log Transaction Count All Items                   PASSED
+							SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_log_transaction_count_all_items 'dvance' , '802' , '1340' , '01' , 'FR-01-D-1-R' , NULL , 'LP00000993' , NULL , '08' , '3757' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+							----  SUCCESS NONE
+							-------- (1 rows affected)
+						2:              Compare: OutCode = "SUCCESS"?                                         PASSED
+						5:               Return: PASS                                                         PASSED
+					17:                List: STO Fields - Delete Record                                   PASSED
+					18:              Return: PASS                                                         PASSED
+				20:             Compare: FLAG CC LP Unit Count Enabled?                               PASSED
+				21:             Compare: HU Expected = Quantity?                                      FAILED
+				22:           Calculate: HU Scanned = +1                                              PASSED
+				12:                Call: CC - LP                                                      FAILED
+					2:            Calculate: Local ScrHeading = SCR_HEADING                               PASSED
+					3:            Calculate: Clear FLAG CC MLP LP Uncounted                               PASSED
+					4:            Calculate: Clear FLAG Done                                              PASSED
+					5:              Compare: Master HU ID = ""?                                           PASSED
+					7:            Calculate: ScrTxt: Enter LP for CC                                      PASSED
+					8:            Calculate: ScrOpt: F3:Done                                              PASSED
+					9:              Compare: FLAG CC Show Expected = 1?                                   FAILED
+					10:           Calculate: SCR_HELP2 = ""                                               PASSED
+					11:                Call: Enhanced RF Constructor                                      PASSED
+						2:            Calculate: RF JSON String = ""                                          PASSED
+						3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+						4:            Calculate: RF JSON List String = ""                                     PASSED
+						6:            Calculate: RF Mask Character = "*"                                      PASSED
+						8:                 Call: RF JSON Build LP Contents                                    PASSED
+							1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+							23:              Return: PASS                                                         PASSED
+						10:                Call: RF JSON Build List                                           PASSED
+							2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+							3:            Calculate: Local List Row = List Row                                    PASSED
+							4:            Calculate: Local Max Choices = Max Choices                              PASSED
+							6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+							9:                 List: Dialog - Clear List                                          PASSED
+							28:                List: MNU - Row Count                                              PASSED
+							29:             Compare: List Row Count > 0?                                          FAILED
+							41:           Calculate: List Row = Local List Row                                    PASSED
+							42:           Calculate: Max Choices = Local Max Choices                              PASSED
+							43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+							44:              Return: PASS                                                         PASSED
+						12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+							1:             Database: Exec SF Build RF JSON String                                 PASSED
+								SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , NULL , 'Scan LP in Location FR-01-D-1-R.' , NULL , 'Scanned: 10' , NULL , NULL , NULL , NULL , NULL , 'F3:Done ' , NULL , 'LP' , NULL , '*' , 'PROMPT' ) }
+								---- 
+								-------- (1 rows affected)
+							6:               Return: PASS                                                         PASSED
+						14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+						15:              Return: PASS                                                         PASSED
+					12:              Dialog: PRMT-1123SPIO                                                FAILED
+					13:             Compare: <F1-Cancel>?                                                 FAILED
+					14:             Compare: <F3-Done>?                                                   PASSED
+					29:           Calculate: SCR_HEADING = Local ScrHeading                               PASSED
+					30:              Return: FAIL                                                         FAILED
+				13:             Compare: <F3-Done>?                                                   PASSED
+				45:                Call: DBExec SP CC Find Uncounted LP/MLP                           PASSED
+					1:              Compare: Location = ""?                                               FAILED
+					2:             Database: Exec SP CC Find Uncounted LP/MLP                             PASSED
+						SQL STATEMENT { DECLARE @out_nRowCount INTEGER , @out_vchHUID NVARCHAR ( 22 ) , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_cc_find_uncounted_lp_mlp '01' , 'FR-01-D-1-R' , NULL , NULL , '0' , @out_nRowCount OUTPUT , @out_vchHUID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_nRowCount , @out_vchHUID , @out_vchCode , @out_vchMsg }
+						----  0  SUCCESS NONE
+						-------- (1 rows affected)
+					3:              Compare: OutCode = "SUCCESS"?                                         PASSED
+					6:               Return: PASS                                                         PASSED
+				46:             Compare: Count > 0?                                                   FAILED
+				58:              Return: PASS                                                         PASSED
+			18:                Call: DBUpd LOC Last Count Date w/Location                         PASSED
+				1:              Compare: Location = ""?                                               FAILED
+				2:             Database: Upd LOC Last Count Date w/Location                           PASSED
+					SQL STATEMENT { UPDATE t_location SET last_count_date = '02/29/2024' WHERE location_id = 'FR-01-D-1-R' AND wh_id = '01' }
+					-------- (1 rows affected)
+				5:               Return: PASS                                                         PASSED
+			19:              Return: PASS                                                         PASSED
+		15:             Compare: FLAG CC F8-Skip Set?                                         FAILED
+		17:                Call: DBExec SP Close Work Queue                                   PASSED
+			1:              Compare: Work Q ID = ""?                                              FAILED
+			2:              Compare: User ID = ""?                                                FAILED
+			3:             Database: Exec SP Close Work Queue                                     PASSED
+				SQL STATEMENT { DECLARE @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE usp_close_work_queue '01' , '3757' , 'dvance' , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchCode , @out_vchMsg }
+				----  SUCCESS NONE
+				-------- (1 rows affected)
+			4:              Compare: OutCode = "SUCCESS"?                                         PASSED
+			7:               Return: PASS                                                         PASSED
+		18:              Return: PASS                                                         PASSED
+	2:               Return: PASS                                                         PASSED
+55:             Compare: FLAG CC Skip To Location = 0?                                PASSED
+16:           Calculate: Work Q ID = ""                                               PASSED
+17:                Call: DBExec SP Interleave Dispatcher                              PASSED
+	1:              Compare: IGM Group ID = 0?                                            FAILED
+	2:              Compare: DB Server FLAG = "ORACLE"?                                   FAILED
+	3:             Database: Exec SP Interleave Dispatcher                                PASSED
+		SQL STATEMENT { DECLARE @out_vchWorkQID NVARCHAR ( 30 ) , @out_nSequence INTEGER , @out_vchProcess NVARCHAR ( 130 ) , @out_nCCWorkNotAssignedID INTEGER , @out_vchCode uddt_output_code , @out_vchMsg uddt_output_msg EXECUTE dbo.usp_interleave_dispatcher 1 , NULL , NULL , NULL , NULL , 'ALL' , 0 , NULL , '01' , 'dvance' , 0 , @out_vchWorkQID OUTPUT , @out_nSequence OUTPUT , @out_vchProcess OUTPUT , @out_nCCWorkNotAssignedID OUTPUT , @out_vchCode OUTPUT , @out_vchMsg OUTPUT SELECT @out_vchWorkQID , @out_nSequence , @out_vchProcess , @out_nCCWorkNotAssignedID , @out_vchCode , @out_vchMsg }
+		----  3927 0 Cycle Count 0 SUCCESS NONE
+		-------- (1 rows affected)
+	5:              Compare: OutCode = "SUCCESS"?                                         PASSED
+	8:               Return: PASS                                                         PASSED
+18:             Compare: Work Q ID = ""?                                              FAILED
+33:             Compare: Process = ""?                                                FAILED
+34:           Calculate: Execute PO = Process                                         PASSED
+35:             Compare: Work Q ID = ""?                                              FAILED
+39:                Call: DBCount IGP w/Process,Operator Directed Flag= 'Y'            PASSED
+	1:              Compare: Process = ""?                                                FAILED
+	2:             Database: Count IGP w/Process,Operator Directed Flag= 'Y'              PASSED
+		SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_intlv_process WHERE operator_directed_flag = N'YES' AND process = 'Cycle Count' }
+		----  0
+		-------- (1 rows affected)
+	5:               Return: PASS                                                         PASSED
+40:             Compare: DBRecCount > 0?                                              FAILED
+42:                Call: DBUpd WKQ Assign w/Work Q ID                                 PASSED
+	1:              Compare: Work Q ID = ""?                                              FAILED
+	2:             Database: Upd WKQ Assign w/Work Q ID                                   PASSED
+		SQL STATEMENT { UPDATE t_work_q SET work_status = 'A' , workers_assigned = ( workers_assigned + 1 ) WHERE wh_id = '01' AND work_q_id = '3927' AND ( ( workers_assigned = 0 AND work_type = '16' ) OR work_type <> '16' ) AND ( workers_assigned + 1 ) <= workers_required }
+		-------- (1 rows affected)
+	5:               Return: PASS                                                         PASSED
+43:             Compare: SQL Count > 0?                                               PASSED
+44:                Call: DBCount WKA w/User ID,WKQ ID                                 PASSED
+	1:              Compare: User ID = ""?                                                FAILED
+	2:              Compare: Work Q ID = ""?                                              FAILED
+	3:             Database: Count WKA w/User ID, WKQ ID                                  PASSED
+		SQL STATEMENT { SELECT COUNT ( 1 ) FROM t_work_q_assignment WHERE user_assigned = 'dvance' AND work_q_id = '3927' AND wh_id = '01' }
+		----  0
+		-------- (1 rows affected)
+	6:               Return: PASS                                                         PASSED
+45:             Compare: DBRecCount > 0?                                              FAILED
+46:                Call: DBIns WQA w/WKQ Id,User ID                                   PASSED
+	1:              Compare: Work Q ID = ""?                                              FAILED
+	2:              Compare: User ID = ""?                                                FAILED
+	3:            Calculate: Set Vars for WQA Ins                                         PASSED
+	4:             Database: Ins WQA                                                      PASSED
+		SQL STATEMENT { INSERT INTO t_work_q_assignment ( work_q_id , status , user_assigned , wh_id ) VALUES ( '3927' , 'A' , 'dvance' , '01' ) }
+		-------- (1 rows affected)
+	7:               Return: PASS                                                         PASSED
+47:           Calculate: Menu Name = Process                                          PASSED
+48:             Execute: External PO - Upd EMP Process                                PASSED
+	2:              Compare: Warehouse ID = ""?                                           FAILED
+	3:              Compare: User ID = ""?                                                FAILED
+	6:             Database: Upd EMP Process w/User ID                                    PASSED
+		SQL STATEMENT { UPDATE t_employee SET last_menu_item = business_process , business_process = 'Cycle Count' , last_tran_start_datetime = GETDATE ( ) WHERE id = 'dvance' AND wh_id = '01' }
+		-------- (1 rows affected)
+	9:               Return: PASS                                                         PASSED
+50:             Compare: Interleave Group Name = "Cycle Count"?                       PASSED
+1:            Calculate: Transaction Code = "800"                                     PASSED
+2:                 Call: Global Values - Cycle Count                                  PASSED
+	1:                 List: WHC - Clear List                                             PASSED
+	2:                 Call: DBList Whse Control - Cycle Count                            PASSED
+		1:             Database: List Whse Control - Cycle Count                              PASSED
+			SQL STATEMENT { SELECT wh_id , control_type , description , next_value , config_display , allow_edit , c1 , c2 , f1 FROM t_whse_control WHERE wh_id = '01' AND control_type IN ( 'ITM_UNIT_CNT_ENABLED' , 'LP_UNIT_CNT_ENABLED' , 'LP_ITM_CNT_ENABLED' , 'CC_LOST_LOC_ITEM' , 'CC_LOST_LOC_LP' , 'CC_LOST_LOC_MLP' , 'CC_SHOW_EXPECTED' ) }
+			----  01 CC_LOST_LOC_ITEM CC Lost Location Item 0 SHOW_VA 1 CC_LOST_LOC_ITEM
+			----  01 CC_LOST_LOC_LP CC Lost Location LP 0 SHOW_VA 1 CC_LOST_LOC_LP
+			----  01 CC_LOST_LOC_MLP CC Lost Location MLP 0 SHOW_VA 1 CC_LOST_LOC_MLP
+			----  01 CC_SHOW_EXPECTED CC Show Expected Count 0 SHOW_VA 1
+			----  01 ITM_UNIT_CNT_ENABLED CC Item Unit Cnt 0 SHOW_VA 1
+			----  01 LP_ITM_CNT_ENABLED CC LP Item Unit Cnt 0 SHOW_VA 1
+			----  01 LP_UNIT_CNT_ENABLED CC LP Unit Cnt 1 SHOW_VA 1
+			-------- (7 rows affected)
+		4:               Return: PASS                                                         PASSED
+	4:            Calculate: Control Type = ITM_UNIT_CNT_ENABLED                          PASSED
+	5:                 List: WHC - Find Record                                            PASSED
+	6:            Calculate: FLAG CC Item Unit Count Enabled = WHC Next Value             PASSED
+	7:            Calculate: Control Type = LP_UNIT_CNT_ENABLED                           PASSED
+	8:                 List: WHC - Find Record                                            PASSED
+	9:            Calculate: FLAG CC LP Unit Count Enabled = WHC Next Value               PASSED
+	10:           Calculate: Control Type = LP_ITM_CNT_ENABLED                            PASSED
+	11:                List: WHC - Find Record                                            PASSED
+	12:           Calculate: FLAG CC LP Item Count Enabled = WHC Next Value               PASSED
+	13:           Calculate: Control Type = CC_LOST_LOC_ITEM                              PASSED
+	14:                List: WHC - Find Record                                            PASSED
+	15:           Calculate: Cycle Count Lost Location Item = WHC c1                      PASSED
+	16:           Calculate: Control Type = CC_LOST_LOC_LP                                PASSED
+	17:                List: WHC - Find Record                                            PASSED
+	18:           Calculate: Cycle Count Lost Location LP = WHC c1                        PASSED
+	19:           Calculate: Control Type = CC_LOST_LOC_MLP                               PASSED
+	20:                List: WHC - Find Record                                            PASSED
+	21:           Calculate: Cycle Count Lost Location MLP = WHC c1                       PASSED
+	22:           Calculate: Control Type = CC_SHOW_EXPECTED                              PASSED
+	23:                List: WHC - Find Record                                            PASSED
+	24:           Calculate: FLAG CC Show Expected = WHC Next Value                       PASSED
+	25:              Return: PASS                                                         PASSED
+3:            Calculate: Storage Type = "STORAGE"                                     PASSED
+4:            Calculate: Work Type = 08 (CYCCOUNT)                                    PASSED
+6:              Compare: Work Q ID = ""?                                              FAILED
+9:            Calculate: Status = "U"                                                 PASSED
+10:                Call: DBUpd WKQ Sts w/Type,Sts=H                                   PASSED
+	1:              Compare: Work Type = ""?                                              FAILED
+	2:              Compare: Status = ""?                                                 FAILED
+	3:             Database: Upd WKQ Sts w/Type,Sts=H                                     PASSED
+		SQL STATEMENT { UPDATE t_work_q SET work_status = 'U' WHERE work_type = '08' AND work_status = 'H' AND wh_id = '01' }
+		-------- (0 rows affected)
+	6:               Return: PASS                                                         PASSED
+11:                Call: DBFind WKQ (Location) w/Work Q ID                            PASSED
+	1:              Compare: Work Q ID = ""?                                              FAILED
+	2:             Database: Find WKQ (Location) w/Work Q ID                              PASSED
+		SQL STATEMENT { SELECT location_id FROM t_work_q WHERE work_q_id = '3927' AND wh_id = '01' }
+		----  AS-WHSE-XFER-B3
+		-------- (1 rows affected)
+	5:               Return: PASS                                                         PASSED
+12:           Calculate: Count Location = WKQ Location                                PASSED
+1:            Calculate: Clear FLAG Location Override                                 PASSED
+3:            Calculate: FLAG CC Skip To Location = 0                                 PASSED
+4:            Calculate: FLAG CC F8-Skip = 0                                          PASSED
+5:              Compare: Work Q ID = ""?                                              FAILED
+6:            Calculate: Location = Count Location                                    PASSED
+7:            Calculate: Local Location = Location                                    PASSED
+8:            Calculate: Location = Count Location                                    PASSED
+10:           Calculate: ScrTxt: Enter Location w/Loc                                 PASSED
+11:           Calculate: ScrOpt: F8:Skip                                              PASSED
+2:                 Call: Enhanced RF Constructor                                      PASSED
+	2:            Calculate: RF JSON String = ""                                          PASSED
+	3:            Calculate: SYS_JSON_DIALOG = ""                                         PASSED
+	4:            Calculate: RF JSON List String = ""                                     PASSED
+	6:            Calculate: RF Mask Character = "*"                                      PASSED
+	8:                 Call: RF JSON Build LP Contents                                    PASSED
+		1:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+		23:              Return: PASS                                                         PASSED
+	10:                Call: RF JSON Build List                                           PASSED
+		2:            Calculate: Local Dialogs = Dialogs                                      PASSED
+		3:            Calculate: Local List Row = List Row                                    PASSED
+		4:            Calculate: Local Max Choices = Max Choices                              PASSED
+		6:              Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+		9:                 List: Dialog - Clear List                                          PASSED
+		28:                List: MNU - Row Count                                              PASSED
+		29:             Compare: List Row Count > 0?                                          FAILED
+		41:           Calculate: List Row = Local List Row                                    PASSED
+		42:           Calculate: Max Choices = Local Max Choices                              PASSED
+		43:           Calculate: Dialogs = Local Dialogs                                      PASSED
+		44:              Return: PASS                                                         PASSED
+	12:                Call: DB!Exec SF Build RF JSON String - Confirm DB Error Retry     PASSED
+		1:             Database: Exec SF Build RF JSON String                                 PASSED
+			SQL STATEMENT { SELECT dbo.usf_build_json_string ( NULL , 'Go to location AS-WHSE-XFER-B3 and scan.' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , 'Cycle Count' , 'F8:Skip ' , NULL , 'LOCATION' , NULL , '*' , 'PROMPT' ) }
+			---- 
+			-------- (1 rows affected)
+		6:               Return: PASS                                                         PASSED
+	14:           Calculate: SYS_JSON_DIALOG = RF JSON String                             PASSED
+	15:              Return: PASS                                                         PASSED
+5:              Compare: Flag Employee Log Input Set?                                 FAILED
+8:              Compare: Dialog Type = Dialog Type List?                              FAILED
+9:              Compare: Dialog Type = Dialog Type List NoChoice?                     FAILED
+10:             Compare: Dialog Type = Dialog Type List CC?                           FAILED
+15:           Calculate: Set SCR Lengths                                              PASSED
+16:             Compare: Dialog Type = Dialog Type Prompt CC Quantity?                FAILED
+17:             Compare: Dialog Type = Dialog Type Confirm?                           FAILED
+18:             Compare: Dialog Type = Dialog Type Prompt?                            PASSED
+1:              Compare: SCR_HELP = ""?                                               FAILED
+2:              Compare: SCR_OPTIONS = ""?                                            FAILED
+10:             Compare: SCR_OPTIONS Length > 20?                                     FAILED
+11:             Compare: SCR_HELP Length > 40?                                        FAILED

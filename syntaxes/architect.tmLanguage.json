@@ -2,42 +2,65 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Architect",
 	"patterns": [
+		{ "include": "#sql-statement" },
+		{ "include": "#passed" },
+		{ "include": "#failed" },
+		{ "include": "#action-type" },
+		{ "include": "#row-comment" },
+		{ "include": "#line-number" },
 		{
-			"include": "#keywords"
+			"name": "support.function.dialog.architect",
+			"match": "(?<=Call: )Dialog(?=\\s{2,})"
+		},
+		{ "include": "#flow-control"},
+		{ "include": "#next-instruction"},
+		{
+			"name": "comment.line.go-entered.architect",
+			"match": "^Go Entered$"
 		},
 		{
-			"include": "#strings"
-		},
-		{
-			"include": "#sql-statement"
+			"name": "comment.line.debug.architect",
+			"match": "^Read parameters from Debug File: .*"
 		}
 	],
 	"repository": {
-		"keywords": {
-			"patterns": [
-				{
-					"name": "keyword.control.architect",
-					"match": "\\b(if|while|for|return)\\b"
-				}
-			]
+		"passed": {
+			"name": "constant.language.passed.architect",
+			"match": "\\b(PASSED|PASS)\\b"
 		},
-		"strings": {
-			"name": "string.quoted.double.architect",
-			"begin": "\"",
-			"end": "\"",
-			"patterns": [
-				{
-					"name": "constant.character.escape.architect",
-					"match": "\\\\."
-				}
-			]
+		"failed": {
+			"name": "invalid.illegal.failed.architect",
+			"match": "\\b(FAILED|FAIL)\\b"
+		},
+		"action-type": {
+			"name": "keyword.operator.architect",
+			"match": "(Dynamic Call|Call|Dialog|Return|Database|Compare|Calculate|Execute|List)(?=:)"
+		},
+		"next-instruction": {
+			"name": "keyword.control.next-instruction.architect",
+			"match": "Next Instruction(?=: \\d+$)"
+		},
+		"line-number": {
+			"name": "constant.numeric.architect",
+			"match": "\\b\\d+(?=(:|$))"
+		},
+		"row-comment": {
+			"name": "comment.line.double-dash.architect",
+			"match": "----(----)?.*"
+		},
+		"flow-control": {
+			"name": "keyword.control.flow.architect",
+			"match": "\\b(ENTERING|LEAVING|RETURNING TO)(?=:)"
 		},
 		"sql-statement": {
-			"begin": "\\SQL STATEMENT {",
+			"begin": "\\b(SQL STATEMENT) {",
 			"end": "\\}",
 			"beginCaptures": {
 				"0": {
 					"name": "punctuation.brace.open"
+				},
+				"1": {
+					"name": "keyword.operator.sql-statement.architect"
 				}
 			},
 			"endCaptures": {
