@@ -1,6 +1,6 @@
-# architect-debug-lang README
+# architect-debug-lang
 
-This is the architect-debug-lang syntax-highlighting language extension
+This is the architect-debug-lang syntax-highlighting language extension.
 
 ## Features
 

@@ -2,18 +2,38 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Architect",
 	"patterns": [
-		{ "include": "#sql-statement" },
-		{ "include": "#passed" },
-		{ "include": "#failed" },
-		{ "include": "#action-type" },
-		{ "include": "#row-comment" },
-		{ "include": "#line-number" },
+		{
+			"include": "#sql-statement"
+		},
+		{
+			"include": "#passed"
+		},
+		{
+			"include": "#failed"
+		},
+		{
+			"include": "#action-type"
+		},
+		{
+			"include": "#row-comment"
+		},
+		{
+			"include": "#line-number"
+		},
 		{
 			"name": "support.function.dialog.architect",
 			"match": "(?<=Call: )Dialog(?=\\s{2,})"
 		},
-		{ "include": "#flow-control"},
-		{ "include": "#next-instruction"},
+		{
+			"name": "support.function.dialog.architect",
+			"match": "(?<=RETURNING TO: )WA.Menu List"
+		},
+		{
+			"include": "#flow-control"
+		},
+		{
+			"include": "#next-instruction"
+		},
 		{
 			"name": "comment.line.go-entered.architect",
 			"match": "^Go Entered$"
@@ -21,6 +41,13 @@
 		{
 			"name": "comment.line.debug.architect",
 			"match": "^Read parameters from Debug File: .*"
+		},
+		{
+			"include": "#nested-action"
+		},
+		{
+			"name": "variable.language.ellipsis.architect",
+			"match": "\\.\\.\\."
 		}
 	],
 	"repository": {
@@ -33,16 +60,20 @@
 			"match": "\\b(FAILED|FAIL)\\b"
 		},
 		"action-type": {
-			"name": "keyword.operator.architect",
-			"match": "(Dynamic Call|Call|Dialog|Return|Database|Compare|Calculate|Execute|List)(?=:)"
+			"name": "keyword.operator.action.architect",
+			"match": "(Dynamic Call|Call|Execute|Database|Dialog|Return|Compare|Calculate|List)(?=:)"
+		},
+		"nested-action": {
+			"name": "variable.parameter.nested-action.architect",
+			"match": "(?<=(Dynamic Call|Call|Execute|Database|ENTERING|LEAVING): ).{1,60}"
 		},
 		"next-instruction": {
 			"name": "keyword.control.next-instruction.architect",
-			"match": "Next Instruction(?=: \\d+$)"
+			"match": "Next Instruction(?=: -?\\d+$)"
 		},
 		"line-number": {
 			"name": "constant.numeric.architect",
-			"match": "\\b\\d+(?=(:|$))"
+			"match": "-?\\d+(?=(:|$))"
 		},
 		"row-comment": {
 			"name": "comment.line.double-dash.architect",
@@ -74,7 +105,6 @@
 				}
 			],
 			"contentName": "meta.embedded.inline.sql"
-			
 		}
 	},
 	"scopeName": "source.architect"

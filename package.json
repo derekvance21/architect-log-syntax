@@ -2,6 +2,10 @@
   "name": "architect-debug-lang",
   "displayName": "Architect Debug Lang",
   "description": "Syntax highlighting for formatted Architect Debug Log",
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/derekvance21/architect-log-syntax"
+	},
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.87.0"
