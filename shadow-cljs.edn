@@ -1,0 +1,11 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src"]
+
+ :dependencies
+ [[instaparse "1.4.12"]]
+
+ :builds
+ {:formatter {:exports-var formatter.exports/exports
+              :target :node-library
+              :output-to "out/formatter.js"}}}

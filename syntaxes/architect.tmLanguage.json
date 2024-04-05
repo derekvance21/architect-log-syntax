@@ -39,6 +39,10 @@
 			"match": "^Go Entered$"
 		},
 		{
+			"name": "comment.line.watched-variable.architect",
+			"match": "^(Watched Variable|Working Storage Variable).*"
+		},
+		{
 			"name": "comment.line.debug.architect",
 			"match": "^Read parameters from Debug File: .*"
 		},
@@ -65,7 +69,7 @@
 		},
 		"nested-action": {
 			"name": "variable.parameter.nested-action.architect",
-			"match": "(?<=(Dynamic Call|Call|Execute|Database|ENTERING|LEAVING): ).{1,60}"
+			"match": "(?<=(Dynamic Call|Call|Execute|ENTERING|LEAVING): ).{1,60}"
 		},
 		"next-instruction": {
 			"name": "keyword.control.next-instruction.architect",
