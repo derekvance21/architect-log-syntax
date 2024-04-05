@@ -1,2 +1,8 @@
 node_modules
 *.vsix
+.shadow-cljs
+.cpcache
+out
+.clj-kondo
+.lsp
+demo/
