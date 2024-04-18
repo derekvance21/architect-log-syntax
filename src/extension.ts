@@ -4,28 +4,26 @@ import * as vscode from 'vscode';
 const formatter = require('./formatter.js');
 
 class ArchitectDocumentFormatter implements vscode.DocumentFormattingEditProvider {
-    provideDocumentFormattingEdits(
-        document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken)
-        : vscode.ProviderResult<vscode.TextEdit[]> {
-			const text: string = document.getText(); //.replace(/\r/g, '');
-			try {
-				const newText: string = formatter.transform(text);
-				const start = new vscode.Position(0, 0);
-				const end = document.positionAt(text.length); // can use Infinity, Infinity for end position `new vscode.Position(Infinity, Infinity)`
-				const range = new vscode.Range(start, end);
-				const replace = vscode.TextEdit.replace(range, newText);
-				return [replace];
-			} catch (e) {
-				let errorMessage: string = 'Formatting failed';
-				if (typeof e === 'string') {
-					errorMessage = e;
-				} else if (e instanceof Error) {
-					errorMessage = e.message;
-				}
-				vscode.window.showErrorMessage(errorMessage);
-				return [];
+	provideDocumentFormattingEdits(document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): vscode.ProviderResult<vscode.TextEdit[]> {
+		const text: string = document.getText(); //.replace(/\r/g, '');
+		try {
+			const newText: string = formatter.transform(text);
+			const start = new vscode.Position(0, 0);
+			const end = document.positionAt(text.length); // can use Infinity, Infinity for end position `new vscode.Position(Infinity, Infinity)`
+			const range = new vscode.Range(start, end);
+			const replace = vscode.TextEdit.replace(range, newText);
+			return [replace];
+		} catch (e) {
+			let errorMessage: string = 'Formatting failed';
+			if (typeof e === 'string') {
+				errorMessage = e;
+			} else if (e instanceof Error) {
+				errorMessage = e.message;
 			}
-    }
+			vscode.window.showErrorMessage(errorMessage);
+			return [];
+		}
+	}
 }
 
 // this method is called when your extension is activated
@@ -34,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "architect-debug-lang" is now active!');
-    console.log(formatter);
+	console.log(formatter);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -43,12 +41,12 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hi World!' + formatter.constantNum);
+		vscode.window.showInformationMessage('Hi, World! ' + formatter.constantNum);
 	});
 
 	context.subscriptions.push(
-		disposable,
+		// disposable,
 		vscode.languages.registerDocumentFormattingEditProvider(
-            'architect', new ArchitectDocumentFormatter())
+			'architect', new ArchitectDocumentFormatter())
 	);
 }

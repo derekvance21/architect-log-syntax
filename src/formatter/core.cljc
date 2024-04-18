@@ -110,7 +110,7 @@
 
 (defn sql->str
   [[_ sql]]
-  (str "SQL STATEMENT { " sql " }"))
+  (str "SQL STATEMENT" sql))
 
 
 ;; ---- AS-WHSE-XFER-B3

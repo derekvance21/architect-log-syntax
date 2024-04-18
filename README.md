@@ -9,8 +9,16 @@ This extension provides syntax highlighting through a TextMate grammar for Archi
 ## Compile
 
 ```sh
-rm -r .shadow-cljs/builds # for some reason, new changes to resources/parser.bnf won't be ready if this folder already exists
+rm -r .shadow-cljs/builds # for some reason, new changes to resources/parser.bnf won't be read if this folder already exists
 npx shadow-cljs compile formatter # compile the clojurescript formatter library into javascript
-npm run compile
 vsce package
 ```
+
+## Bugs
+
+- [X] It will fail parsing if there's a closing curly brace in SQL statement (like for JSON operations)
+- [X] End action
+>   22:                 End: N/A                                                          PASSED  Next Instruction: 0
+- [X] `SQL STATEMENT {BEGIN TRANSACTION}` failed parse b/c rn I require spaces between curly braces
+- [ ] WANextGeneration.Dialog doesn't highlight separately as WA.Dialog does
+    - it won't do this. But it'll do so with Call: Dialog
