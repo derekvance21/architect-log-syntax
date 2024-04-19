@@ -65,7 +65,7 @@
 		},
 		"action-type": {
 			"name": "keyword.operator.action.architect",
-			"match": "(Dynamic Call|Call|Execute|Database|Dialog|Return|Compare|Calculate|List)(?=:)"
+			"match": "(Dynamic Call|Call|Execute|Database|Dialog|Return|Compare|Calculate|List|End|Send)(?=:)"
 		},
 		"nested-action": {
 			"name": "variable.parameter.nested-action.architect",

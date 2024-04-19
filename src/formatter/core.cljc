@@ -142,7 +142,7 @@
 
 
 (def keep-line-types
-  #{:Statement :SQL :Row :RowsAffected})
+  #{:Statement :SQL :Row :RowsAffected :Unknown})
 
 
 (defn format-debug-log
