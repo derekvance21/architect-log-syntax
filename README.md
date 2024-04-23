@@ -20,5 +20,3 @@ vsce package
 - [X] End action
 >   22:                 End: N/A                                                          PASSED  Next Instruction: 0
 - [X] `SQL STATEMENT {BEGIN TRANSACTION}` failed parse b/c rn I require spaces between curly braces
-- [ ] WANextGeneration.Dialog doesn't highlight separately as WA.Dialog does
-    - it won't do this. But it'll do so with Call: Dialog

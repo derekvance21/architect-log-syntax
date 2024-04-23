@@ -2,12 +2,25 @@
   (:require
    [clojure.string :as str]
    #?(:clj [instaparse.core :as insta :refer [defparser]]
-      :cljs [instaparse.core :as insta :refer-macros [defparser]])))
+      :cljs [instaparse.core :as insta :refer-macros [defparser]])
+   #?(:cljs ["poor-mans-t-sql-formatter" :as sql])))
+
+
+(defn format-sql
+  [s]
+  #?(:clj s
+     :cljs (let [result (sql/formatSql s)
+                 error-found (.-errorFound result)
+                 text (.-text result)]
+             (if error-found
+               text
+               text))))
 
 
 (defn str->int [s]
   #?(:clj  (java.lang.Integer/parseInt s)
      :cljs (js/parseInt s)))
+
 
 (defn exception
   [msg]
@@ -28,6 +41,12 @@
             {:Name #(vector :Name (str/trim %))
              :Integer str->int
              :Statement #(vector :Statement (apply conj {} %&))})))))
+
+(comment
+  (parse "SQL STATEMENT {EXEC usp_something '{\"x\": 4}'; SELECT @x;}")
+  (parse "  22:                 End: N/A                                                          PASSED  Next Instruction: 0")
+  (parse "SQL STATEMENT { UPDATE t_emp_input_log_holding SET input_date = GETDATE ( ) , user_input = CASE WHEN 0 = 0 THEN 'ALL' ELSE 'F' + CAST ( 0 AS NVARCHAR ( 5 ) ) END WHERE input_id = 4815591}")
+  (parse "SQL STATEMENT { }"))
 
 
 (defn line-type
@@ -108,9 +127,17 @@
        Result))
 
 
-(defn sql->str
+(defn sql->str-lines
   [[_ sql]]
-  (str "SQL STATEMENT" sql))
+  (let [indent #(str "\t" %)]
+    (flatten
+     ["SQL STATEMENT {"
+      (-> (str/trim sql)
+          (str/replace #"^\{|}$" "")
+          (format-sql)
+          (str/split-lines)
+          (->> (map indent)))
+      "}"])))
 
 
 ;; ---- AS-WHSE-XFER-B3
@@ -125,22 +152,26 @@
   (str "-------- (" rows-affected " rows affected)"))
 
 
-(defn line->str
+(defn line->str-lines
   [[_ contents :as line]]
   (case (line-type line)
-    :Statement (statement->str contents)
-    :SQL (sql->str contents)
-    :Row (row->str contents)
-    :RowsAffected (rows-affected->str contents)
-    :Unknown "..."
-    (pr-str line)))
+    :Statement [(statement->str contents)]
+    :SQL (sql->str-lines contents) ;; this is where you can use `format-sql`. Will need to refactor, though, b/c multiple lines created
+    :Row [(row->str contents)]
+    :RowsAffected [(rows-affected->str contents)]
+    :Unknown ["..."]
+    [(pr-str line)]))
 
 
-(defn indent-line->str
+(defn indent-line->str-lines
   [[level line]]
-  (str (str/join (repeat level "\t")) (line->str line)))
+  (let [indentation (str/join (repeat level "\t"))
+        indent #(str indentation %)]
+    (->> (line->str-lines line)
+         (map indent))))
 
 
+;; Line = (Blank | Statement | SQL | Returning | Leaving | Entering | Row | RowsAffected | Error | Debug | Go | Working | Watched) (* / Other *)
 (def keep-line-types
   #{:Statement :SQL :Row :RowsAffected :Unknown})
 
@@ -152,7 +183,7 @@
        reverse
        (mapcat line->indentation-lines) ;; list of [<indentation> <line>]
        (filter (comp keep-line-types line-type second)) ;; remove all other line-types
-       (map indent-line->str) ;; list of strings
+       (mapcat indent-line->str-lines) ;; list of strings
        (str/join "\n")))
 
 
@@ -169,6 +200,9 @@
   (->> (read-file "demo/cycle-count-fixed.txt")
        (format-debug-log)
        (write-file "demo/cycle-count-fixed.archlog"))
+
+  (let [s "SQL STATEMENT { UPDATE t_emp_input_log_holding SET input_date = GETDATE ( ) , user_input = CASE WHEN 0 = 0 THEN 'ALL' ELSE 'F' + CAST ( 0 AS NVARCHAR ( 5 ) ) END WHERE input_id = 4815591}SQL STATEMENT { UPDATE t_emp_input_log_holding SET input_date = GETDATE ( ) , user_input = CASE WHEN 0 = 0 THEN 'ALL' ELSE 'F' + CAST ( 0 AS NVARCHAR ( 5 ) ) END WHERE input_id = 4815591}"]
+    (format-debug-log s))
 
   (->> (read-file "demo/crlf.txt")
        (format-debug-log)
@@ -188,5 +222,7 @@
        reverse
        (mapcat line->indentation-lines)
        (remove (comp #{:Go :Error :Debug :Entering :Leaving :Returning :Blank} line-type second))
-       (map indent-line->str)
-       (str/join "\n")))
+       (mapcat indent-line->str-lines)
+       (str/join "\n"))
+  ;
+  )
