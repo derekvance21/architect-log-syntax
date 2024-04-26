@@ -1,4 +1,6 @@
 node_modules
+.calva/output-window
+.nrepl-port
 *.vsix
 .shadow-cljs
 .cpcache

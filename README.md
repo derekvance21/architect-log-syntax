@@ -20,3 +20,4 @@ vsce package
 - [X] End action
 >   22:                 End: N/A                                                          PASSED  Next Instruction: 0
 - [X] `SQL STATEMENT {BEGIN TRANSACTION}` failed parse b/c rn I require spaces between curly braces
+- [X] the following line causs parse fail: `Value = [IV]`. Occurs when you set a field manually in debugger

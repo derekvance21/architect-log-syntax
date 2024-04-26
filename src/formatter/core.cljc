@@ -97,6 +97,43 @@
     (conj stack line)))
 
 
+(defn match-entering
+  [stack]
+  (if-some [[idx entering] (->> stack
+                                (map vector (range))
+                                (filter (comp entering? second))
+                                first)]
+    (let [[_ [_ [_ _ [_ name]]]] entering ;; [:Line [:Entering [:QualifiedName [:Application app] [:Name name]]]]
+          [_ [_ {line-number :NextLineNumber}]] (nth stack (inc idx) nil) ;; [:Line [:Statement {...}]]
+          line [:Line [:Statement {:Action "Call"
+                                   :Name name
+                                   :LineNumber (or line-number 1)
+                                   :Result "N/A"}]]]
+      (nest-until line entering? stack))
+    stack))
+
+
+(defn match-entering-until-done
+  [stack]
+  (let [more-unmatched-entering? #(seq (filter entering? %))]
+    (->> stack
+         (iterate match-entering)
+         (drop-while more-unmatched-entering?)
+         (first))))
+
+
+(comment
+  (->> '([:Line [:x]]
+         [:Line [:y]]
+         [:Line [:z]]
+         [:Line [:Entering "Dialog"]]
+         [:Line [:Entering "Something Else"]]
+         [:Line [:Statement {:Action "Compare" :NextLineNumber 20}]])
+       (match-entering-until-done)
+       (reverse))
+  )
+
+
 (defn line->indentation-lines
   ([line]
    (line->indentation-lines 0 line))
@@ -180,6 +217,7 @@
   [input]
   (->> (parse input)
        (reduce stack-line-reducer ()) ;; get top-level calls only in first level of stack
+       (match-entering-until-done)
        reverse
        (mapcat line->indentation-lines) ;; list of [<indentation> <line>]
        (filter (comp keep-line-types line-type second)) ;; remove all other line-types
@@ -207,6 +245,10 @@
   (->> (read-file "demo/crlf.txt")
        (format-debug-log)
        (write-file "demo/crlf.archlog"))
+
+  (->> (read-file "demo/orphaned-call.txt")
+       (format-debug-log)
+       (write-file "demo/orphaned-call.archlog"))
 
   (->> (read-file "demo/parse-fail.txt")
        (format-debug-log)

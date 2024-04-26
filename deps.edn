@@ -1,1 +1,2 @@
-{:deps {org.clojure/clojurescript {:mvn/version "1.11.54"}}}
+{:deps {org.clojure/clojurescript {:mvn/version "1.11.54"}
+        instaparse/instaparse {:mvn/version "1.4.14"}}}
