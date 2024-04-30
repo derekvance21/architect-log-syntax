@@ -9,7 +9,6 @@ This extension provides syntax highlighting through a TextMate grammar for Archi
 ## Compile
 
 ```sh
-rm -r .shadow-cljs/builds # for some reason, new changes to resources/parser.bnf won't be read if this folder already exists
 npx shadow-cljs compile formatter # compile the clojurescript formatter library into javascript
 vsce package
 ```
@@ -21,3 +20,6 @@ vsce package
 >   22:                 End: N/A                                                          PASSED  Next Instruction: 0
 - [X] `SQL STATEMENT {BEGIN TRANSACTION}` failed parse b/c rn I require spaces between curly braces
 - [X] the following line causs parse fail: `Value = [IV]`. Occurs when you set a field manually in debugger
+- [X] Numbers inside names pick up syntax highlighting. Change syntax grammar to require word breaks surrounding the integers.
+	- Example: `... Calculate: ScrOpt: F2:Item ...`
+- [ ] Bundle

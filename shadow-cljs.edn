@@ -5,6 +5,8 @@
  :dependencies
  [[instaparse "1.4.12"]]
 
+ :cache-blockers #{instaparse.core} ;; https://shadow-cljs.github.io/docs/UsersGuide.html#_compiler_cache
+
  :builds
  {:formatter {:exports-var formatter.exports/exports
               :target :node-library

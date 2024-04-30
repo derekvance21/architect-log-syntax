@@ -77,7 +77,7 @@
 		},
 		"line-number": {
 			"name": "constant.numeric.architect",
-			"match": "-?\\d+(?=(:|$))"
+			"match": "(?<=(^\\s*|Next Instruction: ))-?\\d+(?=(:|$))"
 		},
 		"row-comment": {
 			"name": "comment.line.double-dash.architect",
