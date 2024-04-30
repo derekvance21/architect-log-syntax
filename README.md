@@ -9,7 +9,6 @@ This extension provides syntax highlighting through a TextMate grammar for Archi
 ## Compile
 
 ```sh
-npx shadow-cljs compile formatter # compile the clojurescript formatter library into javascript
 vsce package
 ```
 
@@ -22,4 +21,4 @@ vsce package
 - [X] the following line causs parse fail: `Value = [IV]`. Occurs when you set a field manually in debugger
 - [X] Numbers inside names pick up syntax highlighting. Change syntax grammar to require word breaks surrounding the integers.
 	- Example: `... Calculate: ScrOpt: F2:Item ...`
-- [ ] Bundle
+- [X] Bundle

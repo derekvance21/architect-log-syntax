@@ -8,6 +8,6 @@
  :cache-blockers #{instaparse.core} ;; https://shadow-cljs.github.io/docs/UsersGuide.html#_compiler_cache
 
  :builds
- {:formatter {:exports-var formatter.exports/exports
-              :target :node-library
+ {:formatter {:target :node-library
+              :exports-var formatter.exports/exports
               :output-to "out/formatter.js"}}}
