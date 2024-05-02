@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-const formatter = require('../out/formatter.js');
+const formatter = require('../out/formatter.js'); // compiled clojurescript
 
 class ArchitectDocumentFormatter implements vscode.DocumentFormattingEditProvider {
 	provideDocumentFormattingEdits(document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): vscode.ProviderResult<vscode.TextEdit[]> {
@@ -32,21 +32,14 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "architect-debug-lang" is now active!');
-	console.log(formatter);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('architect-debug-lang.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hi, World! ' + formatter.constantNum);
-	});
-
-	context.subscriptions.push(
-		// disposable,
-		vscode.languages.registerDocumentFormattingEditProvider(
-			'architect', new ArchitectDocumentFormatter())
+	const disposable = vscode.languages.registerDocumentFormattingEditProvider(
+		'architect',
+		new ArchitectDocumentFormatter()
 	);
+
+	context.subscriptions.push(disposable);
 }

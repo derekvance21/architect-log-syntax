@@ -40,7 +40,8 @@
            (insta/transform
             {:Name #(vector :Name (str/trim %))
              :Integer str->int
-             :Statement #(vector :Statement (apply conj {} %&))})))))
+             :Statement #(vector :Statement (apply conj {} %&))
+             :QualifiedName #(apply conj {} %&)})))))
 
 (comment
   (parse "SQL STATEMENT {EXEC usp_something '{\"x\": 4}'; SELECT @x;}")
@@ -64,6 +65,11 @@
   (= (line-type line) :Entering))
 
 
+(defn leaving?
+  [line]
+  (= (line-type line) :Leaving))
+
+
 (defn statement?
   [line]
   (= (line-type line) :Statement))
@@ -74,14 +80,46 @@
   (= (line-type line) :SQL))
 
 
-(defn nest-until
-  [line pred stack]
-  (let [[popped kept] (split-with (complement pred) stack)
-        children (conj (reverse popped)
-                       (nth kept 0 [:Line [:Unknown]]))]
-    (conj (rest kept)
-          (conj line children))))
+(defn dynamic-call-tf
+  [dynamic-call children]
+  (let [[_ [_ {result :Result}]] dynamic-call
+        [_ [_ {name :Name}]] (->> children
+                                  (filter leaving?)
+                                  (last))
+        call [:Line
+              [:Statement
+               {:LineNumber 0
+                :Action "Call"
+                :Name (or name "...")
+                :Result result
+                :NextLineNumber -1}]
+              children]]
+    (conj dynamic-call (list call))))
 
+
+(defn nest-until
+  ([line pred stack]
+   (nest-until line pred stack conj))
+  ([line pred stack tf]
+   (let [[taken [start & rest-stack]] (split-with (complement pred) stack)
+         children (conj (reverse taken)
+                        (or start
+                            [:Line [:Unknown]]))
+         new-line (tf line children)]
+     (conj rest-stack new-line))))
+
+
+(comment
+  (nest-until
+   [:Line [:Statement {:Action "Dynamic Call" :Name "Execute PO"}]]
+   entering?
+   '([:Line [:Statement {:Action "Return"}]]
+     [:Line [:Leaving {:Application "WANextGeneration"
+                       :Name "_Directed Move - DMR"}]]
+     [:Line [:Statement {:Action "Calculate" :Name "x += 1"}]]
+     [:Line [:Entering {:Application "WANextGeneration" :Name "_Directed Move - DMR"}]])
+   dynamic-call-tf)
+  )
 
 (def nesting-actions
   #{"Call" "Database" "Dynamic Call" "Execute"})
@@ -92,8 +130,8 @@
   (case (stmt-type line)
     "Call" (nest-until line entering? stack)
     "Database" (nest-until line sql? stack)
-    "Dynamic Call" (nest-until line entering? stack)
-    "Execute" (nest-until line entering? stack)
+    "Dynamic Call" (nest-until line entering? stack dynamic-call-tf)
+    "Execute" (nest-until line entering? stack) ;; TODO - this might need similar treatment to Dynamic Call
     (conj stack line)))
 
 
@@ -103,7 +141,7 @@
                                 (map vector (range))
                                 (filter (comp entering? second))
                                 first)]
-    (let [[_ [_ [_ _ [_ name]]]] entering ;; [:Line [:Entering [:QualifiedName [:Application app] [:Name name]]]]
+    (let [[_ [_ {name :Name}]] entering ;; [:Line [:Entering [:QualifiedName [:Application app] [:Name name]]]]
           [_ [_ {line-number :NextLineNumber}]] (nth stack (inc idx) nil) ;; [:Line [:Statement {...}]]
           line [:Line [:Statement {:Action "Call"
                                    :Name name
@@ -130,8 +168,7 @@
          [:Line [:Entering "Something Else"]]
          [:Line [:Statement {:Action "Compare" :NextLineNumber 20}]])
        (match-entering-until-done)
-       (reverse))
-  )
+       (reverse)))
 
 
 (defn line->indentation-lines
@@ -238,6 +275,10 @@
   (->> (read-file "demo/cycle-count-fixed.txt")
        (format-debug-log)
        (write-file "demo/cycle-count-fixed.archlog"))
+
+  (->> (read-file "demo/more-ops.archlog")
+       (format-debug-log)
+       (write-file "demo/more-ops-formatted.archlog"))
 
   (let [s "SQL STATEMENT { UPDATE t_emp_input_log_holding SET input_date = GETDATE ( ) , user_input = CASE WHEN 0 = 0 THEN 'ALL' ELSE 'F' + CAST ( 0 AS NVARCHAR ( 5 ) ) END WHERE input_id = 4815591}SQL STATEMENT { UPDATE t_emp_input_log_holding SET input_date = GETDATE ( ) , user_input = CASE WHEN 0 = 0 THEN 'ALL' ELSE 'F' + CAST ( 0 AS NVARCHAR ( 5 ) ) END WHERE input_id = 4815591}"]
     (format-debug-log s))

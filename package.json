@@ -1,7 +1,8 @@
 {
   "name": "architect-debug-lang",
   "displayName": "Architect Debug Lang",
-  "description": "Syntax highlighting for formatted Architect Debug Log",
+  "description": "Formatting and syntax highlighting for Architect Debug Log",
+  "icon": "images/architect.png",
   "version": "0.0.1",
   "repository": {
     "type": "git",
@@ -46,12 +47,6 @@
         "embeddedLanguages": {
           "meta.embedded.inline.sql": "sql"
         }
-      }
-    ],
-    "commands": [
-      {
-        "command": "architect-debug-lang.helloWorld",
-        "title": "Hello World"
       }
     ]
   },
