@@ -71,8 +71,8 @@ vsce package
 
 - [X] Bundle with webpack
 - [X] Dynamic Call statement will nest until Entering, but then it doesn't show what PO it Executed. It just says `Dynamic Call: Execute PO`, instead of `Dynamic Call: _Directed Move - DMR` - see `demo/all-ops.archlog` for example.
-- [X] In top level, use RETURNING TO statements to infer top level call. For example, if debugging is started inside a busines process object, it'll keep RETURNING TO: <app>.<bpo>. And you can find that in the top level statement list. So then that should be used to create a Call: <bpo> statement with unknown result:
-	- ` N/A:                Call: <bpo>                       N/A
+- [X] In top level, use RETURNING TO statements to infer top level call. For example, if debugging is started inside a busines process object, it'll keep `RETURNING TO: <app>.<bpo>`. And you can find that in the top level statement list. So then that should be used to create a `Call: <bpo>` statement with unknown result:
+	- ` N/A:                Call: <bpo>                       N/A`
 	- and then inside is the rest. So you use all the contextual information you can.
 - [ ] Split SQL result rows into multiple rows. This would allow to more easily see what was SELECT'ed by the SQL STATEMENT database action.
 	- complication is that rn they're space delimited, but the values themselves can include spaces. JSON will surround with double quotes which could be worked around, but it's also possible that `---- THIS IS A SINGLE ERROR MESSAGE` could be a valid output.
