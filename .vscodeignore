@@ -18,3 +18,4 @@ package-lock.json
 .shadow-cljs/**
 deps.edn
 shadow-cljs.edn
+.nrepl-port
