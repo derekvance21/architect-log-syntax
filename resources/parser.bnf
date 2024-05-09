@@ -1,5 +1,5 @@
 <S> = Line {<#"\r?\n"> Line} (* \r carriage return option is necessary for CRLF! I tested and confirmed it's necessary *)
-Line = (Blank | Statement | SQL | Returning | Leaving | Entering | Row | RowsAffected | Error | Debug | Go | Working | Watched | Value | SingleStep | Unknown) (* / Other *) (* MY IMPLEMENTATION DEPENDS ON LINE ONLY HAVING ONE ELEMENT!! *)
+Line = (Blank | Statement | SQL | Returning | Leaving | Entering | Row | RowsAffected | Error | Debug | Go | Working | Watched | Value | SingleStep | Unknown) / Other (* MY IMPLEMENTATION DEPENDS ON LINE ONLY HAVING ONE ELEMENT!! *)
 Statement = <Whitespace> LineNumber <':'> <Whitespace> Action <": "> Name <Whitespace> Result <"  Next Instruction: "> NextLineNumber
 Action = "Call" | "Compare" | "Calculate" | "List" | "Database" | "Return" | "Execute" | "Dialog" | "Dynamic Call" | "End" | "Send"
 Integer = #"-?\d+"
@@ -13,7 +13,7 @@ SQL = <"SQL STATEMENT"> #".*"
 Application = Word
 Returning = <"RETURNING TO: "> QualifiedName
 Leaving = <"LEAVING: "> QualifiedName
-QualifiedName = Application <'.'> Name
+QualifiedName = Application? <'.'> Name
 Entering = <"ENTERING: "> QualifiedName
 RowsAffected = <"-------- ( "> Integer <" row" ["s"] " affected )">
 Row = <"----" [' ']> #".*"

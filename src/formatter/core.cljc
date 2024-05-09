@@ -1,6 +1,7 @@
 (ns formatter.core
   (:require
    [clojure.string :as str]
+   [clojure.set :as set]
    #?(:clj [instaparse.core :as insta :refer [defparser]]
       :cljs [instaparse.core :as insta :refer-macros [defparser]])
    #?(:cljs ["poor-mans-t-sql-formatter" :as sql])))
@@ -65,14 +66,14 @@
   (= (line-type line) :Entering))
 
 
+(defn returning?
+  [line]
+  (= (line-type line) :Returning))
+
+
 (defn leaving?
   [line]
   (= (line-type line) :Leaving))
-
-
-(defn statement?
-  [line]
-  (= (line-type line) :Statement))
 
 
 (defn sql?
@@ -80,32 +81,76 @@
   (= (line-type line) :SQL))
 
 
+(defn ->statement
+  ([m]
+   [:Line [:Statement m]])
+  ([m children]
+   [:Line [:Statement m] children]))
+
+
+(defn line-map
+  "Gets a line's map information. Many lines have format [:Line [:Type <map>]], and this is a helper to get the map inside"
+  [[_ [_ m]]]
+  (when (map? m)
+    m))
+
+
+(defn submap?
+  "Checks whether m contains all entries in sub"
+  [m sub]
+  (set/subset? (set sub) (set m)))
+
+
+(defn match-entering-tf
+  "line is a Call statement line"
+  [line children rest-stack]
+  (let [prev-statement (line-map (first rest-stack))
+        pre-execute-po {:Action "Compare"
+                        :Name "MNU Dynamic Call = \"Yes\"?"
+                        :Result "PASSED"}]
+    (if (submap? prev-statement pre-execute-po)
+      (->statement
+       {:Action "Dynamic Call"
+        :Name "Execute PO"
+        :LineNumber (get prev-statement :NextLineNumber "N/A")
+        :Result "N/A"
+        :NextLineNumber -1}
+       (list
+        (conj (update-in line [1 1] ;; [:Line [:Statement {}]] ;; is why [1 1] works
+                         assoc :LineNumber "N/A")
+              children)))
+      (conj line children))))
+
+
 (defn dynamic-call-tf
-  [dynamic-call children]
-  (let [[_ [_ {result :Result}]] dynamic-call
-        [_ [_ {name :Name}]] (->> children
-                                  (filter leaving?)
-                                  (last))
-        call [:Line
-              [:Statement
-               {:LineNumber 0
-                :Action "Call"
-                :Name (or name "...")
-                :Result result
-                :NextLineNumber -1}]
-              children]]
-    (conj dynamic-call (list call))))
+  "line is a Dynamic Call statement line"
+  [line children _]
+  (let [{result :Result} (line-map line)
+        {name :Name} (->> children
+                          (filter leaving?)
+                          (last)
+                          (line-map))
+        call (->statement
+              {:LineNumber "N/A"
+               :Action "Call"
+               :Name (or name "...")
+               :Result result
+               :NextLineNumber -1}
+              children)]
+    (conj line (list call))))
 
 
 (defn nest-until
   ([line pred stack]
-   (nest-until line pred stack conj))
+   (nest-until line pred stack
+               (fn [line children _]
+                 (conj line children))))
   ([line pred stack tf]
    (let [[taken [start & rest-stack]] (split-with (complement pred) stack)
          children (conj (reverse taken)
                         (or start
                             [:Line [:Unknown]]))
-         new-line (tf line children)]
+         new-line (tf line children rest-stack)]
      (conj rest-stack new-line))))
 
 
@@ -119,10 +164,8 @@
      [:Line [:Statement {:Action "Calculate" :Name "x += 1"}]]
      [:Line [:Entering {:Application "WANextGeneration" :Name "_Directed Move - DMR"}]])
    dynamic-call-tf)
+  ;
   )
-
-(def nesting-actions
-  #{"Call" "Database" "Dynamic Call" "Execute"})
 
 
 (defn stack-line-reducer
@@ -138,16 +181,17 @@
 (defn match-entering
   [stack]
   (if-some [[idx entering] (->> stack
-                                (map vector (range))
+                                (map vector (range)) ;; could do (map-indexed vector), too
                                 (filter (comp entering? second))
                                 first)]
-    (let [[_ [_ {name :Name}]] entering ;; [:Line [:Entering [:QualifiedName [:Application app] [:Name name]]]]
-          [_ [_ {line-number :NextLineNumber}]] (nth stack (inc idx) nil) ;; [:Line [:Statement {...}]]
-          line [:Line [:Statement {:Action "Call"
-                                   :Name name
-                                   :LineNumber (or line-number 1)
-                                   :Result "N/A"}]]]
-      (nest-until line entering? stack))
+    (let [{name :Name} (line-map entering) ;; [:Line [:Entering {:Application app :Name name}]]
+          {line-number :NextLineNumber} (line-map (nth stack (inc idx) nil)) ;; [:Line [:Statement {...}]]
+          line (->statement
+                {:Action "Call"
+                 :Name name
+                 :LineNumber (or line-number 1)
+                 :Result "N/A"})]
+      (nest-until line entering? stack match-entering-tf))
     stack))
 
 
@@ -160,15 +204,41 @@
          (first))))
 
 
+(defn infer-returning
+  [stack]
+  (let [returnings (->> stack
+                        (filter (comp #{"Call" "Dynamic Call"} stmt-type)) ;; probs not needed
+                        (mapcat #(nth % 2 ())) ;; get children of top-level calls
+                        (filter returning?) ;; there will be RETURNING TO statements inside nested calls
+                        (distinct) ;; get unique ones - there *should* only be one, ever
+                        )]
+    (if (= (count returnings) 1) ;; if there are more than one, don't try and guess
+      (let [{name :Name} (line-map (first returnings))
+            children (conj (reverse stack) [:Line [:Unknown]])]
+        (list
+         (->statement
+          {:Action "Call"
+           :Name name
+           :LineNumber "N/A"
+           :Result "N/A"
+           :NextLineNumber -1}
+          children)))
+      stack)))
+
+
 (comment
   (->> '([:Line [:x]]
-         [:Line [:y]]
+         [:Line [:Statement {:Action "Calculate" :Name "x += 1" :LineNumber 1 :Result "PASSED" :NextLineNumber 20}]]
          [:Line [:z]]
-         [:Line [:Entering "Dialog"]]
-         [:Line [:Entering "Something Else"]]
-         [:Line [:Statement {:Action "Compare" :NextLineNumber 20}]])
+         [:Line [:Entering {:Name "Dialog"}]]
+         [:Line [:Entering {:Name "Something Else"}]]
+         [:Line [:Returning {:Name "_MPT Move Pallet"}]]
+         [:Line [:Statement {:Action "Compare" :LineNumber 12 :Name "x > 0" :Result "PASSED" :NextLineNumber 20}]])
        (match-entering-until-done)
-       (reverse)))
+       (infer-returning)
+       (reverse))
+  ;
+  )
 
 
 (defn line->indentation-lines
@@ -226,6 +296,11 @@
   (str "-------- (" rows-affected " rows affected)"))
 
 
+(defn other->str
+  [[_ other]]
+  other)
+
+
 (defn line->str-lines
   [[_ contents :as line]]
   (case (line-type line)
@@ -234,6 +309,7 @@
     :Row [(row->str contents)]
     :RowsAffected [(rows-affected->str contents)]
     :Unknown ["..."]
+    :Other [(other->str contents)]
     [(pr-str line)]))
 
 
@@ -247,7 +323,12 @@
 
 ;; Line = (Blank | Statement | SQL | Returning | Leaving | Entering | Row | RowsAffected | Error | Debug | Go | Working | Watched) (* / Other *)
 (def keep-line-types
-  #{:Statement :SQL :Row :RowsAffected :Unknown})
+  #{:Statement
+    :SQL
+    :Row
+    :RowsAffected
+    :Unknown
+    #_:Other})
 
 
 (defn format-debug-log
@@ -255,6 +336,7 @@
   (->> (parse input)
        (reduce stack-line-reducer ()) ;; get top-level calls only in first level of stack
        (match-entering-until-done)
+       (infer-returning)
        reverse
        (mapcat line->indentation-lines) ;; list of [<indentation> <line>]
        (filter (comp keep-line-types line-type second)) ;; remove all other line-types
@@ -271,6 +353,10 @@
   (def write-file
     #?(:clj spit
        :cljs #(.writeFileSync (js/require "fs") %1 %2)))
+
+  (->> (read-file "/mnt/c/Users/DerekVance/Documents/Four Hands/cross-dock-sscc/crossdock-sscc-unf.archlog")
+       (format-debug-log)
+       (write-file "demo/crossdock.archlog"))
 
   (->> (read-file "demo/cycle-count-fixed.txt")
        (format-debug-log)
