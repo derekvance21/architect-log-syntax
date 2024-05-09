@@ -1,7 +1,7 @@
 {
   "name": "architect-debug-lang",
   "displayName": "Architect Debug Lang",
-  "description": "Formatting and syntax highlighting for Architect Debug Log",
+  "description": "Formatting and syntax highlighting for Architect Debug Message Log",
   "icon": "images/architect.png",
   "version": "0.0.1",
   "repository": {

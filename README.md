@@ -1,14 +1,14 @@
 # Architect Debug Log
 
-This is the architect-debug-lang syntax-highlighting and formatting language extension.
+This is a VSCode syntax highlighting and formatting language extension for Architect Debug Message Log files.
 
 ## Install
 
-Go to the Releases page and download the `.vsix` extension file there. Then, inside VSCode, open the command pallette with `Ctrl+Shift+p` and select the `.vsix` file that just downloaded. It should prompt you to reload to enable.
+Go to the [Releases](https://github.com/derekvance21/architect-log-syntax/releases) page and download the `.vsix` extension file there. Inside VSCode, open the command pallette with `Ctrl+Shift+p`, search for and select `Extensions: Install from VSIX...`, and select the `.vsix` file that just downloaded. It should prompt you to reload to enable.
 
 ## Features
 
-To enable on an opened Architect Debug log file, open the command pallette with `Ctrl+Shift+p` and select `Change Language Mode` (the shortcut for this is `Ctrl+k m`), then search for and select `Architect (architect)`.
+To enable on an opened Architect Debug Message Log file, open the command pallette with `Ctrl+Shift+p` and select `Change Language Mode` (the shortcut for this is `Ctrl+k m`), then search for and select `Architect (architect)`.
 
 Alternatively, name the file with a `.archlog` file extension and the extension should automatically change to `Architect` language mode.
 
