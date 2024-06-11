@@ -76,3 +76,4 @@ vsce package
 	- and then inside is the rest. So you use all the contextual information you can.
 - [ ] Split SQL result rows into multiple rows. This would allow to more easily see what was SELECT'ed by the SQL STATEMENT database action.
 	- complication is that rn they're space delimited, but the values themselves can include spaces. JSON will surround with double quotes which could be worked around, but it's also possible that `---- THIS IS A SINGLE ERROR MESSAGE` could be a valid output.
+- [ ] Visual Debugger apparently has a "Log Level 5" that will log any time a field changes, not just for those you're watching. Apparently it's visible in the "Application Status Console" or "System Status Console", but maybe not the message log. Check this out and figure out the best way to show this in the formatted document
